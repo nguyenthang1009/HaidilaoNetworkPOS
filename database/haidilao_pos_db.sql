@@ -32,17 +32,17 @@ DROP TABLE IF EXISTS `chat_logs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `chat_logs` (
   `log_id` int NOT NULL AUTO_INCREMENT,
-  `sender` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `receiver` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message_type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sender` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `receiver` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `sent_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`log_id`),
   KEY `fk_chat_sender` (`sender`),
   KEY `fk_chat_receiver` (`receiver`),
   CONSTRAINT `fk_chat_receiver` FOREIGN KEY (`receiver`) REFERENCES `network_devices` (`device_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_chat_sender` FOREIGN KEY (`sender`) REFERENCES `network_devices` (`device_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +51,6 @@ CREATE TABLE `chat_logs` (
 
 LOCK TABLES `chat_logs` WRITE;
 /*!40000 ALTER TABLE `chat_logs` DISABLE KEYS */;
-INSERT INTO `chat_logs` VALUES (1,'Tablet_Ban1','PC_LeTan','RING','Xin thêm khăn ướt, tạp dề và dây buộc tóc','2026-10-15 12:01:25'),(2,'Tablet_Ban1','PC_LeTan','RING','Xin thêm khăn ướt, tạp dề và dây buộc tóc','2026-10-15 12:02:34'),(3,'Tablet_Ban1','PC_LeTan','CHAT','Helo','2026-10-15 12:05:07'),(4,'PC_Admin','PC_LeTan','SECURITY','Violation Shutdown (Err-Disable)','2026-10-15 12:06:11'),(5,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:06:57'),(6,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:00'),(7,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:02'),(8,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:05'),(9,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:07'),(10,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:10'),(11,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:12'),(12,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:15'),(13,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:17'),(14,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:20'),(15,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:23'),(16,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:25'),(17,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:28'),(18,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:30'),(19,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:33'),(20,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:35'),(21,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:38'),(22,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:40'),(23,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:43'),(24,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:07:45'),(25,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:34:59'),(26,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:35:01'),(27,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:35:04'),(28,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:35:07'),(29,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:35:09'),(30,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:35:12'),(31,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 12:35:14'),(32,'PC_Admin','PC_LeTan','SECURITY','Port Restored (No Shutdown)','2026-10-15 12:35:16'),(33,'PC_LeTan','Tablet_Ban1','CHAT','gsdg','2026-10-15 12:37:42'),(34,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-15 12:41:21'),(35,'Tablet_Ban1','PC_LeTan','RING','Yêu cầu kiểm đồ và thanh toán hóa đơn tại bàn','2026-10-15 12:44:08'),(36,'PC_Admin','PC_LeTan','SECURITY','Violation Shutdown (Err-Disable)','2026-10-15 13:00:04'),(37,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:00:45'),(38,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:00:47'),(39,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:00:50'),(40,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:00:52'),(41,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:00:55'),(42,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:00:57'),(43,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:01:00'),(44,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:01:03'),(45,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:01:05'),(46,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:01:08'),(47,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:01:10'),(48,'POS_Server','PC_LeTan','SECURITY','Auth Violation: Cổng Switch của thiết bị này đang bị khóa vi phạm (Err-Disable)!','2026-10-15 13:01:13'),(49,'PC_Admin','PC_LeTan','SECURITY','Port Restored (No Shutdown)','2026-10-15 13:01:15'),(50,'Tablet_Ban1','PC_LeTan','CHAT','Helo','2026-10-15 13:01:52'),(51,'Tablet_Ban1','POS_Server','ORDER','Lẩu Cà Chua Tân Cương Đậm Đà (x1), Thăn Ngoại Bò Mỹ Black Angus (x1), Kem Häagen-Dazs Vani Pháp (x1) (443000 VNĐ)','2026-10-15 13:03:07'),(52,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-15 13:04:31'),(53,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-17 17:05:47'),(54,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-17 17:07:37'),(55,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 04:10:42'),(56,'Tablet_Ban2','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 04:11:49'),(57,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 05:35:03'),(58,'PC_LeTan','Tablet_Ban1','CHAT','tôi có thể giúp gì cho bạn','2026-10-18 05:36:46'),(59,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 05:37:04'),(60,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 05:37:15'),(61,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 05:37:15'),(62,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 05:37:16'),(63,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 06:06:55'),(64,'Tablet_Ban1','PC_LeTan','RING','Cần nhân viên hỗ trợ trực tiếp tại bàn','2026-10-18 06:08:22');
 /*!40000 ALTER TABLE `chat_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,10 +63,10 @@ DROP TABLE IF EXISTS `menu_items`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `menu_items` (
   `item_id` int NOT NULL AUTO_INCREMENT,
-  `category` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `item_name` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `item_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(10,0) NOT NULL,
-  `status` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT 'AVAILABLE',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'AVAILABLE',
   `image_data` mediumblob,
   PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -91,11 +90,11 @@ DROP TABLE IF EXISTS `network_devices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `network_devices` (
-  `device_id` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vlan_name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ip_address` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mac_address` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `security_status` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT 'SECURE_UP',
+  `device_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `vlan_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mac_address` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `security_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'SECURE_UP',
   PRIMARY KEY (`device_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -106,7 +105,7 @@ CREATE TABLE `network_devices` (
 
 LOCK TABLES `network_devices` WRITE;
 /*!40000 ALTER TABLE `network_devices` DISABLE KEYS */;
-INSERT INTO `network_devices` VALUES ('PC_Admin','VLAN 10 (Quản trị)','192.168.10.30','0090.219E.44B3','SECURE_STICKY'),('PC_LeTan','VLAN 10 (Quản trị)','172.26.176.1','0015.5D73.1C48','DHCP_ACTIVE'),('PC_LeTan_DESKTOP-4BQV59F','VLAN 10 (Quản trị)','192.168.10.29','0015.5D73.1C48','DHCP_ACTIVE'),('POS_Server','VLAN 10 (Quản trị)','192.168.10.50','0060.3EE3.74D1','SECURE_STICKY'),('Tablet_Ban1','VLAN 20 (Khách Wi-Fi)','172.31.160.1','0015.5D73.1C48','DHCP_ACTIVE'),('Tablet_Ban2','VLAN 20 (Khách Wi-Fi)','192.168.20.102','000D.BDD6.851B','DHCP_ACTIVE'),('Tablet_Ban3','VLAN 20 (Khách Wi-Fi)','192.168.20.103','0030.F20B.0A57','DHCP_ACTIVE');
+INSERT INTO `network_devices` VALUES ('PC_Admin','VLAN 10 (Quản trị)','192.168.10.30','0090.219E.44B3','SECURE_STICKY'),('PC_LeTan','VLAN 10 (Quản trị)','192.168.10.20','00D0.BA5C.2E14','SECURE_STICKY'),('POS_Server','VLAN 10 (Quản trị)','192.168.10.50','0060.3EE3.74D1','SECURE_STICKY'),('Tablet_Ban1','VLAN 20 (Khách Wi-Fi)','192.168.20.101','0001.C7A2.9B31','DHCP_ACTIVE'),('Tablet_Ban2','VLAN 20 (Khách Wi-Fi)','192.168.20.102','000D.BDD6.851B','DHCP_ACTIVE'),('Tablet_Ban3','VLAN 20 (Khách Wi-Fi)','192.168.20.103','0030.F20B.0A57','DHCP_ACTIVE');
 /*!40000 ALTER TABLE `network_devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,15 +148,15 @@ DROP TABLE IF EXISTS `orders`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders` (
   `order_id` int NOT NULL AUTO_INCREMENT,
-  `table_id` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `items_summary` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `table_id` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `items_summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `total_amount` decimal(12,0) NOT NULL,
-  `order_status` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT 'CHỜ XÁC NHẬN',
+  `order_status` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'CHỜ XÁC NHẬN',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`),
   KEY `fk_orders_device` (`table_id`),
   CONSTRAINT `fk_orders_device` FOREIGN KEY (`table_id`) REFERENCES `network_devices` (`device_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,7 +165,6 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,'Tablet_Ban1','Lẩu Cà Chua Tân Cương Đậm Đà (x1), Thăn Ngoại Bò Mỹ Black Angus (x1), Kem Häagen-Dazs Vani Pháp (x1)',443000,'ĐÃ PHỤC VỤ HOÀN TẤT','2026-10-15 13:03:07');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -179,4 +177,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-18 13:34:55
+-- Dump completed on 2026-10-18 13:44:52
