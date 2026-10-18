@@ -34,6 +34,7 @@ public class ClientSession implements Runnable {
     private String macAddress = "0000.0000.0000";
     private String vlanName = "VLAN 20 (Khách Wi-Fi)";
     private boolean authenticated = false;
+    private String remoteIp = "";   // IP thật của máy đang kết nối (lấy từ socket), dùng để ghi log an ninh
 
     public ClientSession(Socket socket, PosServer server, FirewallManager firewall) {
         this.socket = socket;
@@ -84,6 +85,7 @@ public class ClientSession implements Runnable {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
+            remoteIp = socket.getInetAddress().getHostAddress();
 
             // Heartbeat: client gửi PING mỗi 5 giây. Quá 15 giây không nhận được gói nào
             // thì readLine() ném SocketTimeoutException -> coi thiết bị đã mất kết nối (rớt Wi-Fi, tắt máy đột ngột...)
@@ -96,6 +98,7 @@ public class ClientSession implements Runnable {
             NetworkPacket authPacket = NetworkPacket.parse(plainAuth);
             if (authPacket == null || authPacket.getType() != CommandType.AUTH) {
                 server.log("[ACL-DROP] Phát hiện kết nối không có gói bắt tay AUTH hoặc sai mã hóa AES. Ngắt kết nối ngay!");
+                DatabaseManager.saveSecurityLog("UNKNOWN", remoteIp, "NO_AUTH", "Kết nối không gửi gói AUTH hợp lệ");
                 closeConnection();
                 return;
             }
@@ -113,7 +116,8 @@ public class ClientSession implements Runnable {
             if (!firewall.validatePortSecurity(roleStr, deviceId, authKey, errorReason)) {
                 server.log("[PORT-SECURITY VIOLATION] Từ chối kết nối từ " + deviceId + ": " + errorReason);
                 sendMessage(CommandType.AUTH_FAIL + "|" + errorReason);
-                DatabaseManager.saveChatOrBellLog("POS_Server", deviceId, "SECURITY", "Auth Violation: " + errorReason);
+                // Ghi vào security_logs (không có khóa ngoại) nên thiết bị lạ chưa đăng ký vẫn ghi được
+                DatabaseManager.saveSecurityLog(deviceId, remoteIp, "AUTH_FAIL", errorReason.toString());
                 closeConnection();
                 return;
             }
@@ -186,6 +190,7 @@ public class ClientSession implements Runnable {
                 StringBuilder denyReason = new StringBuilder();
                 if (!firewall.checkPermission(this.role, packet.getType(), denyReason)) {
                     server.log(denyReason.toString());
+                    DatabaseManager.saveSecurityLog(deviceId, remoteIp, "RBAC_DENY", denyReason.toString());
                     sendMessage(CommandType.SERVER_ACK + "|" + denyReason);
                     continue;
                 }

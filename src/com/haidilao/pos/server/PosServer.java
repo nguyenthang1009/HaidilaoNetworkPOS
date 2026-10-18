@@ -238,7 +238,7 @@ public class PosServer {
             session.sendMessage("KICKED|Cổng Switch của thiết bị [" + deviceId + "] đã bị đưa vào trạng thái Err-Disable bởi PC_Admin!");
             session.closeConnection();
             log("[PORT-SECURITY] PC_Admin đã kích hoạt Violation Shutdown đối với: " + deviceId);
-            DatabaseManager.saveChatOrBellLog("PC_Admin", deviceId, "SECURITY", "Violation Shutdown (Err-Disable)");
+            DatabaseManager.saveSecurityLog(deviceId, session.getSimulatedIp(), "PORT_SHUTDOWN", "PC_Admin kích hoạt Violation Shutdown (Err-Disable)");
             DatabaseManager.updateDeviceSecurityStatus(deviceId, "ERR_DISABLE");
             return true;
         }
@@ -251,7 +251,7 @@ public class PosServer {
     public boolean unlockDevice(String deviceId) {
         DatabaseManager.updateDeviceSecurityStatus(deviceId, "STICKY_ACTIVE");
         log("[PORT-SECURITY] PC_Admin đã mở khóa cổng Switch (no shutdown) cho: " + deviceId);
-        DatabaseManager.saveChatOrBellLog("PC_Admin", deviceId, "SECURITY", "Port Restored (No Shutdown)");
+        DatabaseManager.saveSecurityLog(deviceId, null, "PORT_RESTORE", "PC_Admin mở khóa cổng (no shutdown)");
         return true;
     }
 
@@ -261,6 +261,7 @@ public class PosServer {
     public void restoreAllPorts() {
         DatabaseManager.restoreAllDevicePorts();
         log("[PORT-SECURITY] PC_Admin đã mở khóa (no shutdown) toàn bộ cổng Switch trên hệ thống!");
+        DatabaseManager.saveSecurityLog("ALL", null, "PORT_RESTORE", "PC_Admin mở khóa toàn bộ cổng đang bị khóa");
     }
 
     public Map<String, ClientSession> getTabletSessions() {

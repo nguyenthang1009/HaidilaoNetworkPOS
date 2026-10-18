@@ -20,6 +20,7 @@ public class DatabaseManager {
 
     // Đã kiểm tra / tạo cột image_data trong bảng menu_items chưa (chỉ cần làm 1 lần mỗi lần chạy chương trình)
     private static volatile boolean imageColumnReady = false;
+    private static volatile boolean securityTableReady = false;
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
@@ -309,6 +310,50 @@ public class DatabaseManager {
             ps.executeUpdate();
         } catch (SQLException e) {
             System.err.println("[DatabaseManager] Lỗi ghi log vào MySQL: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Tạo bảng security_logs nếu chưa có. Bảng này KHÔNG có khóa ngoại tới network_devices
+     * để ghi được cả sự kiện của thiết bị lạ chưa từng đăng ký (đăng nhập sai khóa, quét cổng...).
+     */
+    public static synchronized void ensureSecurityLogTable() {
+        if (securityTableReady) return;
+        String sql = "CREATE TABLE IF NOT EXISTS security_logs ("
+                + " log_id INT NOT NULL AUTO_INCREMENT,"
+                + " device_id VARCHAR(64) NOT NULL,"
+                + " source_ip VARCHAR(45) NULL,"
+                + " event_type VARCHAR(30) NOT NULL,"
+                + " detail TEXT NOT NULL,"
+                + " created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,"
+                + " PRIMARY KEY (log_id)"
+                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+        try (Connection conn = getConnection();
+             Statement st = conn.createStatement()) {
+            st.executeUpdate(sql);
+            securityTableReady = true;
+        } catch (SQLException e) {
+            System.err.println("[DatabaseManager] Lỗi tạo bảng security_logs: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Ghi một sự kiện an ninh: AUTH_FAIL, NO_AUTH, RBAC_DENY, PORT_SHUTDOWN, PORT_RESTORE
+     */
+    public static void saveSecurityLog(String deviceId, String sourceIp, String eventType, String detail) {
+        if (!securityTableReady) ensureSecurityLogTable();
+        String id = (deviceId == null || deviceId.isEmpty()) ? "UNKNOWN" : deviceId;
+        if (id.length() > 64) id = id.substring(0, 64); // client lạ có thể gửi tên rất dài
+        String sql = "INSERT INTO security_logs (device_id, source_ip, event_type, detail) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, id);
+            ps.setString(2, sourceIp);
+            ps.setString(3, eventType);
+            ps.setString(4, detail == null ? "" : detail);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("[DatabaseManager] Lỗi ghi log an ninh: " + e.getMessage());
         }
     }
 

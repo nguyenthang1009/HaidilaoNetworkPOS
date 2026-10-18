@@ -4,7 +4,7 @@ rem Mo cong TCP 8888 tren Windows Firewall de cac laptop khac ket noi vao Server
 
 net session >nul 2>nul
 if errorlevel 1 (
-    echo [LOI] Can quyen Administrator. Chuot phai file nay -> Run as administrator.
+    echo [LOI] Can quyen Administrator. Hay chuot phai file nay va chon: Run as administrator
     pause
     exit /b 1
 )

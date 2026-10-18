@@ -7,7 +7,9 @@ import com.haidilao.pos.protocol.CommandType;
 import com.haidilao.pos.protocol.ProtocolConstants;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Bộ máy Tường Lửa Mạng (Network Firewall & Port Security Engine)
@@ -61,22 +63,35 @@ public class FirewallManager {
         return true;
     }
 
+    // Danh sách lệnh MỖI vai trò được phép gửi sau khi đăng nhập (whitelist).
+    // Lệnh nào không nằm trong danh sách đều bị từ chối, kể cả lệnh mới thêm sau này.
+    private static final Set<CommandType> TABLET_ALLOWED = EnumSet.of(
+            CommandType.PING, CommandType.GET_MENU, CommandType.GET_HISTORY,
+            CommandType.ORDER, CommandType.RING, CommandType.CHAT_TO_RECEPTION);
+
+    private static final Set<CommandType> RECEPTION_ALLOWED = EnumSet.of(
+            CommandType.PING, CommandType.GET_HISTORY,
+            CommandType.CHAT_TO_TABLE, CommandType.ORDER_STATUS_UPDATE);
+
     /**
      * Kiểm tra phân quyền theo vai trò (Role-Based Access Control - RBAC)
+     * Ví dụ: Tablet không được gửi CHAT_TO_TABLE (giả làm Lễ tân nhắn sang bàn khác),
+     * Lễ tân không được gửi ORDER / RING (giả làm khách đặt món, bấm chuông).
      */
     public boolean checkPermission(DeviceRole role, CommandType command, StringBuilder denyReason) {
+        Set<CommandType> allowed;
         if (role == DeviceRole.TABLET) {
-            // Tablet khách hàng chỉ được phép gửi chuông, đặt món, nhắn tin cho lễ tân
-            if (command == CommandType.ORDER_STATUS_UPDATE || command == CommandType.PORT_SHUTDOWN) {
-                denyReason.append("[RBAC-VIOLATION] Tablet không có quyền thực thi lệnh quản trị: ").append(command);
-                return false;
-            }
+            allowed = TABLET_ALLOWED;
         } else if (role == DeviceRole.RECEPTION) {
-            // Lễ tân không có quyền shutdown cổng switch
-            if (command == CommandType.PORT_SHUTDOWN) {
-                denyReason.append("[RBAC-VIOLATION] Quầy Lễ Tân không có quyền khóa cổng thiết bị!");
-                return false;
-            }
+            allowed = RECEPTION_ALLOWED;
+        } else {
+            denyReason.append("[RBAC-VIOLATION] Thiết bị chưa xác định vai trò, từ chối lệnh: ").append(command);
+            return false;
+        }
+
+        if (!allowed.contains(command)) {
+            denyReason.append("[RBAC-VIOLATION] Vai trò ").append(role).append(" không có quyền gửi lệnh: ").append(command);
+            return false;
         }
         return true;
     }
