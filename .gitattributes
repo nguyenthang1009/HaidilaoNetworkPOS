@@ -1,0 +1,13 @@
+# Tự chuẩn hóa xuống dòng cho file văn bản
+* text=auto
+
+# File .bat của Windows bắt buộc xuống dòng kiểu CRLF mới chạy đúng
+*.bat text eol=crlf
+
+# File SQL có dòng rất dài (ảnh dạng hex) -> giữ nguyên, không chuyển đổi
+*.sql -text
+
+# File nhị phân
+*.jar binary
+*.png binary
+*.jpg binary

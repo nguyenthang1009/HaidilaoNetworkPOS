@@ -1,0 +1,16 @@
+# File NetBeans tự sinh khi build (Clean and Build sẽ tạo lại)
+/build/
+
+# Cấu hình riêng của máy đang dùng NetBeans (đường dẫn, lịch sử mở file...)
+/nbproject/private/
+
+# Thư mục test trống
+/test/
+
+# File rác của hệ điều hành
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# LƯU Ý: thư mục dist/ (file .jar để chạy) được GIỮ LẠI để bạn bè tải về là chạy được ngay,
+# không cần cài NetBeans. Trước khi đẩy code mới lên, nhớ Clean and Build để dist/ là bản mới nhất.
