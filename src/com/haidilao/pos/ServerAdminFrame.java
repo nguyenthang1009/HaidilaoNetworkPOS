@@ -44,6 +44,7 @@ public class ServerAdminFrame extends javax.swing.JFrame implements ServerEventL
             lblDbStatus.setText("● MYSQL (3306): KẾT NỐI OK");
             lblDbStatus.setForeground(new Color(46, 204, 113));
             DatabaseManager.ensureMenuImageColumn(); // database cũ chưa có cột ảnh món ăn thì tự thêm
+            DatabaseManager.ensureSecurityLogTable(); // chưa có bảng nhật ký an ninh thì tự tạo
             refreshRevenue();
             logAcl("[MYSQL-3306] Đã kết nối cơ sở dữ liệu haidilao_pos_db trên Laragon thành công.");
         } else {
