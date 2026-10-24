@@ -1,5 +1,5 @@
 @echo off
-rem Chay chuong trinh Haidilao POS (man hinh chon: May chu / Le tan / Tablet)
+rem Chay chuong trinh (man hinh chon: May chu / Le tan / Bep / Tablet). Khong can nhap IP may chu.
 cd /d "%~dp0dist"
 
 where java >nul 2>nul

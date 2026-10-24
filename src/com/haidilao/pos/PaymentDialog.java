@@ -1,0 +1,428 @@
+/*
+ * PaymentDialog.java
+ */
+package com.haidilao.pos;
+
+import com.haidilao.pos.client.PosClient;
+import com.haidilao.pos.protocol.NetworkPacket;
+import com.haidilao.pos.server.RestaurantService;
+import com.haidilao.pos.ui.Theme;
+import javax.swing.ButtonGroup;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ * Tablet: xem hóa đơn tạm tính, chọn Tiền mặt / Chuyển khoản (hiện thông tin tài khoản), gửi yêu cầu thanh toán cho Lễ tân.
+ */
+public class PaymentDialog extends javax.swing.JDialog {
+
+    private final PosClient client;
+    private final ButtonGroup methodGroup = new ButtonGroup();
+    private long due = 0;
+
+    public PaymentDialog(java.awt.Frame owner, PosClient client, String tableName) {
+        super(owner, true);
+        this.client = client;
+        initComponents();
+        methodGroup.add(rdoCash);
+        methodGroup.add(rdoTransfer);
+        rdoCash.addActionListener(e -> updateMethod());
+        rdoTransfer.addActionListener(e -> updateMethod());
+        lblSubtitle.setText(tableName + " · Hóa đơn tạm tính");
+        Theme.styleTable(tblBill, -1);
+        int[] w = {40, 240, 40, 110};
+        for (int i = 0; i < w.length; i++) tblBill.getColumnModel().getColumn(i).setPreferredWidth(w[i]);
+        pnlSide.setPreferredSize(new java.awt.Dimension(330, 0));
+        updateMethod();
+        setSize(880, 600);
+        setLocationRelativeTo(owner);
+        lblPayStatus.setText("Đang tải hóa đơn...");
+        btnRequest.setEnabled(false);
+        client.send(NetworkPacket.buildGetBill());
+    }
+
+    private String selectedMethod() {
+        return rdoTransfer.isSelected() ? RestaurantService.PAY_TRANSFER : RestaurantService.PAY_CASH;
+    }
+
+    private void updateMethod() {
+        pnlTransfer.setVisible(rdoTransfer.isSelected());
+        pnlMethod.revalidate();
+    }
+
+    /** Nhận BILL_PREVIEW / PAY_REQUEST_OK / PAY_REQUEST_FAIL do màn hình Tablet chuyển sang */
+    public void onServerMessage(String[] f) {
+        switch (f[0]) {
+            case "BILL_PREVIEW":
+                // BILL_PREVIEW|MÃ_PHIÊN|TẠM_TÍNH|TIỀN_CỌC|CÁC_DÒNG|NGÂN_HÀNG|SỐ_TÀI_KHOẢN|CHỦ_TÀI_KHOẢN|NỘI_DUNG_CK|YÊU_CẦU_ĐÃ_GỬI
+                if (f.length < 10) return;
+                DefaultTableModel model = (DefaultTableModel) tblBill.getModel();
+                model.setRowCount(0);
+                for (String line : NetworkPacket.dec(f[4]).split("\n")) {
+                    String[] c = line.split("\t");
+                    if (c.length >= 4) model.addRow(new Object[]{model.getRowCount() + 1, c[0], c[1], Theme.money(Long.parseLong(c[3]))});
+                }
+                long subtotal = NetworkPacket.parseInt(f[2], 0);
+                long deposit = NetworkPacket.parseInt(f[3], 0);
+                due = Math.max(0, subtotal - deposit);
+                lblSubtotal.setText(Theme.money(subtotal));
+                lblDeposit.setText(Theme.money(deposit));
+                lblDue.setText(Theme.money(due));
+                lblBank.setText("Ngân hàng " + NetworkPacket.dec(f[5]) + " · số tài khoản:");
+                lblAccount.setText(NetworkPacket.dec(f[6]));
+                lblOwner.setText(NetworkPacket.dec(f[7]));
+                lblContent.setText("Nội dung CK: " + NetworkPacket.dec(f[8]));
+                String requested = NetworkPacket.dec(f[9]);
+                if (RestaurantService.PAY_TRANSFER.equals(requested)) rdoTransfer.setSelected(true);
+                updateMethod();
+                lblPayStatus.setText(requested.isEmpty() ? " " : "Quý khách đã gửi yêu cầu thanh toán (" + requested + "), nhân viên đang đến.");
+                btnRequest.setEnabled(subtotal > 0);
+                break;
+            case "PAY_REQUEST_OK": {
+                String method = f.length > 1 ? NetworkPacket.dec(f[1]) : selectedMethod();
+                boolean receptionOnline = f.length > 2 && "1".equals(f[2]);
+                lblPayStatus.setForeground(Theme.GREEN);
+                lblPayStatus.setText(RestaurantService.PAY_TRANSFER.equals(method)
+                        ? "Đã báo nhân viên. Quý khách chuyển khoản theo thông tin bên phải, nhân viên sẽ xác nhận."
+                        : "Đã báo nhân viên, vui lòng chờ nhân viên đến thu tiền tại bàn."
+                          + (receptionOnline ? "" : " (Lễ tân chưa vào ca, vui lòng gọi nhân viên)"));
+                btnRequest.setEnabled(false);
+                btnClose.setText("Đóng");
+                break;
+            }
+            case "PAY_REQUEST_FAIL":
+                lblPayStatus.setForeground(Theme.RED);
+                lblPayStatus.setText(f.length > 1 ? NetworkPacket.dec(f[1]) : "Không gửi được yêu cầu.");
+                btnRequest.setEnabled(true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        pnlHeader = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        pnlBody = new javax.swing.JPanel();
+        scrollBill = new javax.swing.JScrollPane();
+        tblBill = new javax.swing.JTable();
+        pnlSide = new javax.swing.JPanel();
+        pnlSummary = new javax.swing.JPanel();
+        lblSubtotalCaption = new javax.swing.JLabel();
+        lblSubtotal = new javax.swing.JLabel();
+        lblDepositCaption = new javax.swing.JLabel();
+        lblDeposit = new javax.swing.JLabel();
+        lblDueCaption = new javax.swing.JLabel();
+        lblDue = new javax.swing.JLabel();
+        pnlMethod = new javax.swing.JPanel();
+        rdoCash = new javax.swing.JRadioButton();
+        rdoTransfer = new javax.swing.JRadioButton();
+        pnlTransfer = new javax.swing.JPanel();
+        lblBank = new javax.swing.JLabel();
+        lblAccount = new javax.swing.JLabel();
+        lblOwner = new javax.swing.JLabel();
+        lblContent = new javax.swing.JLabel();
+        lblPayStatus = new javax.swing.JLabel();
+        pnlButtons = new javax.swing.JPanel();
+        btnClose = new javax.swing.JButton();
+        btnRequest = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Thanh toán");
+        getContentPane().setLayout(new java.awt.BorderLayout());
+
+        pnlHeader.setBackground(new java.awt.Color(169, 29, 34));
+        pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 20, 14, 20));
+        pnlHeader.setLayout(new java.awt.BorderLayout(0, 4));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(241, 196, 15));
+        lblTitle.setText("THANH TOÁN");
+        pnlHeader.add(lblTitle, java.awt.BorderLayout.NORTH);
+
+        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblSubtitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblSubtitle.setText("Hóa đơn tạm tính");
+        pnlHeader.add(lblSubtitle, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(pnlHeader, java.awt.BorderLayout.NORTH);
+
+        pnlBody.setBackground(new java.awt.Color(255, 255, 255));
+        pnlBody.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 10, 18));
+        pnlBody.setLayout(new java.awt.BorderLayout(14, 10));
+
+        tblBill.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        tblBill.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Món", "SL", "Thành tiền"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblBill.setRowHeight(28);
+        scrollBill.setViewportView(tblBill);
+
+        pnlBody.add(scrollBill, java.awt.BorderLayout.CENTER);
+
+        pnlSide.setOpaque(false);
+        pnlSide.setLayout(new java.awt.BorderLayout(0, 10));
+
+        pnlSummary.setBackground(new java.awt.Color(255, 255, 255));
+        pnlSummary.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tổng tiền", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12), new java.awt.Color(44, 62, 80))); // NOI18N
+        pnlSummary.setLayout(new java.awt.GridBagLayout());
+
+        lblSubtotalCaption.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        lblSubtotalCaption.setForeground(new java.awt.Color(44, 62, 80));
+        lblSubtotalCaption.setText("Tạm tính");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 8, 4, 8);
+        pnlSummary.add(lblSubtotalCaption, gridBagConstraints);
+
+        lblSubtotal.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblSubtotal.setForeground(new java.awt.Color(44, 62, 80));
+        lblSubtotal.setText("0 đ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 8, 4, 8);
+        pnlSummary.add(lblSubtotal, gridBagConstraints);
+
+        lblDepositCaption.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        lblDepositCaption.setForeground(new java.awt.Color(44, 62, 80));
+        lblDepositCaption.setText("Đã đặt cọc");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 8, 4, 8);
+        pnlSummary.add(lblDepositCaption, gridBagConstraints);
+
+        lblDeposit.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblDeposit.setForeground(new java.awt.Color(44, 62, 80));
+        lblDeposit.setText("0 đ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 8, 4, 8);
+        pnlSummary.add(lblDeposit, gridBagConstraints);
+
+        lblDueCaption.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblDueCaption.setForeground(new java.awt.Color(44, 62, 80));
+        lblDueCaption.setText("Cần thanh toán");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        pnlSummary.add(lblDueCaption, gridBagConstraints);
+
+        lblDue.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        lblDue.setForeground(new java.awt.Color(169, 29, 34));
+        lblDue.setText("0 đ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 8, 8, 8);
+        pnlSummary.add(lblDue, gridBagConstraints);
+
+        pnlSide.add(pnlSummary, java.awt.BorderLayout.NORTH);
+
+        pnlMethod.setBackground(new java.awt.Color(255, 255, 255));
+        pnlMethod.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Hình thức thanh toán", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12), new java.awt.Color(44, 62, 80))); // NOI18N
+        pnlMethod.setLayout(new java.awt.GridBagLayout());
+
+        rdoCash.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        rdoCash.setText("Tiền mặt");
+        rdoCash.setOpaque(false);
+        rdoCash.setSelected(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 8, 2, 8);
+        pnlMethod.add(rdoCash, gridBagConstraints);
+
+        rdoTransfer.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        rdoTransfer.setText("Chuyển khoản ngân hàng");
+        rdoTransfer.setOpaque(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 8, 6, 8);
+        pnlMethod.add(rdoTransfer, gridBagConstraints);
+
+        pnlTransfer.setBackground(new java.awt.Color(253, 242, 233));
+        pnlTransfer.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        pnlTransfer.setLayout(new java.awt.GridBagLayout());
+
+        lblBank.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblBank.setForeground(new java.awt.Color(44, 62, 80));
+        lblBank.setText("-");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 2, 0);
+        pnlTransfer.add(lblBank, gridBagConstraints);
+
+        lblAccount.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblAccount.setForeground(new java.awt.Color(44, 62, 80));
+        lblAccount.setText("-");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 2, 0);
+        pnlTransfer.add(lblAccount, gridBagConstraints);
+
+        lblOwner.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblOwner.setForeground(new java.awt.Color(44, 62, 80));
+        lblOwner.setText("-");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 6, 0);
+        pnlTransfer.add(lblOwner, gridBagConstraints);
+
+        lblContent.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblContent.setForeground(new java.awt.Color(169, 29, 34));
+        lblContent.setText("-");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        pnlTransfer.add(lblContent, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 8, 8, 8);
+        pnlMethod.add(pnlTransfer, gridBagConstraints);
+
+        pnlSide.add(pnlMethod, java.awt.BorderLayout.CENTER);
+
+        pnlBody.add(pnlSide, java.awt.BorderLayout.EAST);
+
+        lblPayStatus.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPayStatus.setForeground(new java.awt.Color(41, 128, 185));
+        lblPayStatus.setText(" ");
+        pnlBody.add(lblPayStatus, java.awt.BorderLayout.SOUTH);
+
+        getContentPane().add(pnlBody, java.awt.BorderLayout.CENTER);
+
+        pnlButtons.setBackground(new java.awt.Color(255, 255, 255));
+        pnlButtons.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 18, 14, 18));
+        pnlButtons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 0));
+
+        btnClose.setBackground(new java.awt.Color(236, 240, 241));
+        btnClose.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnClose.setForeground(new java.awt.Color(44, 62, 80));
+        btnClose.setText("Để sau");
+        btnClose.setFocusable(false);
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+        pnlButtons.add(btnClose);
+
+        btnRequest.setBackground(new java.awt.Color(39, 174, 96));
+        btnRequest.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnRequest.setForeground(new java.awt.Color(255, 255, 255));
+        btnRequest.setText("Gửi yêu cầu thanh toán");
+        btnRequest.setFocusable(false);
+        btnRequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRequestActionPerformed(evt);
+            }
+        });
+        pnlButtons.add(btnRequest);
+
+        getContentPane().add(pnlButtons, java.awt.BorderLayout.SOUTH);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCloseActionPerformed
+
+    private void btnRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRequestActionPerformed
+        if (!client.isConnected()) {
+            lblPayStatus.setForeground(Theme.RED);
+            lblPayStatus.setText("Mất kết nối máy chủ, vui lòng gọi nhân viên.");
+            return;
+        }
+        btnRequest.setEnabled(false);
+        lblPayStatus.setForeground(Theme.BLUE);
+        lblPayStatus.setText("Đang gửi yêu cầu...");
+        client.send(NetworkPacket.buildPayRequest(selectedMethod()));
+    }//GEN-LAST:event_btnRequestActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JScrollPane scrollBill;
+    private javax.swing.JTable tblBill;
+    private javax.swing.JPanel pnlSide;
+    private javax.swing.JPanel pnlSummary;
+    private javax.swing.JLabel lblSubtotalCaption;
+    private javax.swing.JLabel lblSubtotal;
+    private javax.swing.JLabel lblDepositCaption;
+    private javax.swing.JLabel lblDeposit;
+    private javax.swing.JLabel lblDueCaption;
+    private javax.swing.JLabel lblDue;
+    private javax.swing.JPanel pnlMethod;
+    private javax.swing.JRadioButton rdoCash;
+    private javax.swing.JRadioButton rdoTransfer;
+    private javax.swing.JPanel pnlTransfer;
+    private javax.swing.JLabel lblBank;
+    private javax.swing.JLabel lblAccount;
+    private javax.swing.JLabel lblOwner;
+    private javax.swing.JLabel lblContent;
+    private javax.swing.JLabel lblPayStatus;
+    private javax.swing.JPanel pnlButtons;
+    private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnRequest;
+    // End of variables declaration//GEN-END:variables
+}

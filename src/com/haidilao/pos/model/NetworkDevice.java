@@ -1,11 +1,14 @@
 package com.haidilao.pos.model;
 
 /**
- * Model thiết bị mạng tương thích sơ đồ Cisco Packet Tracer
+ * Thiết bị đã từng kết nối vào Server (Tablet, Lễ tân, Bếp): IP thật, MAC và trạng thái khóa
  */
 public class NetworkDevice {
+    public static final String STATUS_ACTIVE = "ACTIVE";
+    public static final String STATUS_LOCKED = "LOCKED";
+
     private String deviceId;
-    private String vlanName;
+    private String deviceRole;
     private String ipAddress;
     private String macAddress;
     private String securityStatus;
@@ -13,9 +16,9 @@ public class NetworkDevice {
     public NetworkDevice() {
     }
 
-    public NetworkDevice(String deviceId, String vlanName, String ipAddress, String macAddress, String securityStatus) {
+    public NetworkDevice(String deviceId, String deviceRole, String ipAddress, String macAddress, String securityStatus) {
         this.deviceId = deviceId;
-        this.vlanName = vlanName;
+        this.deviceRole = deviceRole;
         this.ipAddress = ipAddress;
         this.macAddress = macAddress;
         this.securityStatus = securityStatus;
@@ -29,12 +32,12 @@ public class NetworkDevice {
         this.deviceId = deviceId;
     }
 
-    public String getVlanName() {
-        return vlanName;
+    public String getDeviceRole() {
+        return deviceRole;
     }
 
-    public void setVlanName(String vlanName) {
-        this.vlanName = vlanName;
+    public void setDeviceRole(String deviceRole) {
+        this.deviceRole = deviceRole;
     }
 
     public String getIpAddress() {
@@ -59,5 +62,9 @@ public class NetworkDevice {
 
     public void setSecurityStatus(String securityStatus) {
         this.securityStatus = securityStatus;
+    }
+
+    public boolean isLocked() {
+        return STATUS_LOCKED.equalsIgnoreCase(securityStatus);
     }
 }

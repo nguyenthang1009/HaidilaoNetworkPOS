@@ -1,13 +1,15 @@
 package com.haidilao.pos.model;
 
 /**
- * Phân quyền vai trò thiết bị trong mô hình mạng POS
+ * Vai trò của thiết bị khi kết nối vào Server
  */
 public enum DeviceRole {
-    ADMIN("Quản Trị Mạng & Server"),
-    RECEPTION("Quầy Lễ Tân (VLAN 10)"),
-    TABLET("Tablet Khách Hàng (VLAN 20)"),
-    UNKNOWN("Không Xác Định");
+    ADMIN("Máy chủ / Quản trị"),
+    RECEPTION("Quầy Lễ tân"),
+    TABLET("Tablet tại bàn"),
+    KITCHEN("Màn hình Bếp"),
+    WAITER("Nhân viên phục vụ"),
+    UNKNOWN("Không xác định");
 
     private final String description;
 

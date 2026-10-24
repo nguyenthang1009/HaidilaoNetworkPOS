@@ -1,6 +1,8 @@
 @echo off
-rem CHI CHAY TREN MAY CHU (May chay [1] May chu). Chuot phai file nay -> Run as administrator.
-rem Mo cong TCP 8888 tren Windows Firewall de cac laptop khac ket noi vao Server.
+rem CHI CHAY TREN MAY CHU. Chuot phai file nay -> Run as administrator.
+rem Mo 2 cong tren Windows Firewall:
+rem   - TCP 8888: cac may Le tan / Bep / Tablet ket noi vao Server
+rem   - UDP 8889: cac may tu tim thay Server trong mang Wi-Fi (khong can nhap IP)
 
 net session >nul 2>nul
 if errorlevel 1 (
@@ -10,10 +12,18 @@ if errorlevel 1 (
 )
 
 netsh advfirewall firewall delete rule name="Haidilao POS 8888" >nul 2>nul
+netsh advfirewall firewall delete rule name="Haidilao POS 8889 UDP" >nul 2>nul
 netsh advfirewall firewall add rule name="Haidilao POS 8888" dir=in action=allow protocol=TCP localport=8888
 if errorlevel 1 (
-    echo [LOI] Khong mo duoc cong 8888.
-) else (
-    echo Da mo cong TCP 8888. Nho dat mang Wi-Fi o che do Private.
+    echo [LOI] Khong mo duoc cong TCP 8888.
+    pause
+    exit /b 1
 )
+netsh advfirewall firewall add rule name="Haidilao POS 8889 UDP" dir=in action=allow protocol=UDP localport=8889
+if errorlevel 1 (
+    echo [LOI] Khong mo duoc cong UDP 8889.
+    pause
+    exit /b 1
+)
+echo Da mo cong TCP 8888 va UDP 8889. Nho dat mang Wi-Fi o che do Private.
 pause

@@ -13,6 +13,7 @@ public class ChatMessage {
     private String messageType; // CHAT, RING, ORDER, SECURITY
     private String content;
     private Timestamp sentAt;
+    private String senderName;  // tên người gửi lúc gửi (vd. "Phục vụ Lê Minh Phục"), để tra cứu khi có khiếu nại
 
     public ChatMessage() {
     }
@@ -72,6 +73,14 @@ public class ChatMessage {
 
     public void setSentAt(Timestamp sentAt) {
         this.sentAt = sentAt;
+    }
+
+    public String getSenderName() {
+        return senderName == null ? "" : senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 
     public String getFormattedTime() {

@@ -1,169 +1,157 @@
-# Haidilao Network POS: Gọi món & Nhắn tin trong mạng LAN
+# LAN Table Ordering & Service Bell
 
-Đồ án môn **Lập trình mạng máy tính**: ứng dụng gọi món, gọi phục vụ và nhắn tin tức thời cho nhà hàng lẩu.
-Các máy kết nối với nhau qua **TCP Socket** (cổng **8888**) theo mô hình **Client – Server**. Dữ liệu được lưu trong **MySQL**.
+Đồ án môn **Lập trình mạng máy tính**: ứng dụng gọi món tại bàn, gọi phục vụ, nhắn tin, đặt bàn và thanh toán cho nhà hàng lẩu.
+Các máy nói chuyện với nhau theo mô hình **Client – Server** qua **TCP Socket (cổng 8888)**, tự tìm máy chủ trong mạng Wi-Fi bằng
+**UDP broadcast (cổng 8889)**, dữ liệu trên đường truyền được **mã hóa AES-128**. Chỉ máy chủ lưu dữ liệu vào **MySQL**.
 
 ```
-        Máy TABLET (bàn khách)                         MÁY CHỦ (Server)
-   ┌──────────────────────────┐                ┌───────────────────────────┐
-   │ Xem thực đơn có ảnh      │                │ Quản lý thiết bị kết nối  │
-   │ Đặt món, bấm chuông      │◄── Wi-Fi ─────►│ Quản lý thực đơn + ảnh    │◄──► MySQL
-   │ Chat với Lễ tân          │    TCP 8888    │ Khóa / mở cổng thiết bị   │
-   └──────────────────────────┘                └───────────────────────────┘
-        Máy LỄ TÂN (thu ngân)                              ▲
-   ┌──────────────────────────┐                            │
-   │ Nhận đơn, xác nhận đơn   │◄───────────────────────────┘
-   │ Thấy bàn nào đang gọi    │
-   │ Trả lời tin nhắn khách   │
-   └──────────────────────────┘
+   TABLET tại bàn (khách)           MÁY CHỦ (quản lý)                 QUẦY LỄ TÂN (thu ngân)
+ ┌───────────────────────┐      ┌────────────────────────┐        ┌─────────────────────────┐
+ │ Thực đơn + combo có ảnh│      │ Server TCP 8888        │        │ Sơ đồ bàn, ghế trống    │
+ │ Giỏ hàng, ghi chú bếp  │◄────►│ Tự trả lời UDP 8889    │◄──────►│ Xếp bàn, đặt bàn trước  │
+ │ Đơn của bàn (STT)      │ Wi-Fi│ Thực đơn, combo, bàn,  │  Wi-Fi │ Đơn hàng, tin nhắn      │
+ │ Nhắn Lễ tân, gọi PV    │      │ nhân viên, thống kê    │        │ Thanh toán, hủy / chuyển│
+ │ Yêu cầu thanh toán     │      │ Khóa thiết bị          │        └─────────────────────────┘
+ └───────────────────────┘      └───────────┬────────────┘        ┌─────────────────────────┐
+                                             │ MySQL              │ MÀN HÌNH BẾP            │
+                                             ▼                    │ Phiếu đơn, số phút chờ  │◄──► Máy chủ
+                                        (Laragon)                 │ Bắt đầu nấu / Xong      │
+                                                                  └─────────────────────────┘
 ```
 
-| Vai trò | Chạy chức năng | Máy cần cài |
-|---|---|---|
-| **Máy chủ** (chỉ 1 máy) | nút `1. [MÁY CHỦ]` | Java 17+ **và** Laragon (MySQL) |
-| **Lễ tân** | nút `2. [LỄ TÂN]` | Chỉ cần Java 17+ |
-| **Tablet** (mỗi bàn 1 máy) | nút `3. [TABLET]` | Chỉ cần Java 17+ |
+| Vai trò | Ai dùng | Đăng nhập | Máy cần cài |
+|---|---|---|---|
+| **Máy chủ** (chỉ 1 máy) | Quản lý | Tài khoản Quản lý | Java 17+ **và** Laragon (MySQL) |
+| **Quầy Lễ tân** | Thu ngân / Lễ tân | Tài khoản Quản lý hoặc Thu ngân | Chỉ cần Java 17+ |
+| **Màn hình Bếp** | Bếp | Tài khoản Quản lý hoặc Bếp | Chỉ cần Java 17+ |
+| **Nhân viên phục vụ** | Phục vụ (mỗi người 1 máy / điện thoại-laptop) | Tài khoản Phục vụ hoặc Quản lý | Chỉ cần Java 17+ |
+| **Tablet** (mỗi bàn 1 máy) | Khách | Không (Tablet gắn với 1 bàn) | Chỉ cần Java 17+ |
 
-> Chỉ **máy chủ** cần MySQL. Lễ tân và Tablet nhận mọi dữ liệu (thực đơn, ảnh, lịch sử chat...) **qua Server**.
+**Không cần nhập IP máy chủ.** Các máy trong cùng mạng Wi-Fi tự tìm thấy máy chủ.
+
+### Tài khoản mẫu
+
+| Tài khoản | Mật khẩu | Vai trò | Dùng được |
+|---|---|---|---|
+| `admin` | `admin123` | Quản lý | Máy chủ, Lễ tân, Bếp |
+| `thungan` | `123456` | Thu ngân | Lễ tân |
+| `bep` | `123456` | Bếp | Màn hình Bếp |
+| `phucvu1`, `phucvu2` | `123456` | Phục vụ | Máy Nhân viên phục vụ (nhận bàn Lễ tân giao) |
+
+Mật khẩu được lưu dạng băm **SHA-256 + salt**. Đổi mật khẩu trong **Máy chủ → Nhân viên & tài khoản**.
 
 ---
 
 ## Bước 0: Tải project về
 
-Trên trang GitHub này, bấm nút xanh **`<> Code`** → **Download ZIP** → giải nén ra một thư mục, ví dụ `D:\HaidilaoNetworkPOS`.
+Trên GitHub bấm nút xanh **`<> Code`** → **Download ZIP** → giải nén, ví dụ vào `D:\HaidilaoNetworkPOS`.
+*(Hoặc `git clone https://github.com/nguyenthang1009/HaidilaoNetworkPOS.git`)*
 
-*(Ai biết dùng git thì có thể `git clone <link repo này>`.)*
+## Bước 1: Cài Java 17 trở lên (tất cả các máy)
 
----
+Mở **cmd**, gõ `java -version`. Thấy `17`, `21`, `22`... là được. Báo *"java is not recognized"* thì cài **JDK 21**
+(Eclipse Temurin hoặc Oracle, bản Windows x64 `.msi`), rồi mở lại cmd kiểm tra.
 
-## Bước 1: Cài Java (tất cả các máy)
+## Bước 2: Chuẩn bị MÁY CHỦ (chỉ 1 máy)
 
-1. Bấm phím Windows, gõ `cmd`, Enter. Trong cửa sổ cmd gõ:
-   ```
-   java -version
-   ```
-2. Thấy dòng `version "17..."` hoặc số lớn hơn (`21`, `22`...) thì **đã có Java**, sang bước tiếp.
-3. Nếu báo *"java is not recognized..."*:
-   - Tải **JDK 21** (tìm "Eclipse Temurin JDK 21" hoặc "Oracle JDK 21"), chọn bản **Windows x64 Installer (.msi)**.
-   - Cài bằng cách bấm Next đến hết.
-   - Đóng cmd, mở lại, gõ lại `java -version` để kiểm tra.
+1. Cài **Laragon** → mở lên → **Start All**.
+2. *(Không bắt buộc)* Nhập dữ liệu mẫu có sẵn ảnh món: Laragon → **Database** (HeidiSQL) → kết nối `root`, mật khẩu trống →
+   **File → Run SQL file...** → chọn `database\haidilao_pos_db.sql`.
+   Nếu bỏ qua bước này, lần đầu bật máy chủ chương trình **tự tạo database**, bàn, tài khoản, thực đơn và combo mẫu (chưa có ảnh).
+3. **Chuột phải `MoCongFirewall_8888.bat` → Run as administrator.** File này mở **TCP 8888** và **UDP 8889**.
+4. Settings → Network & Internet → Wi-Fi → mạng đang dùng → chọn **Private network**.
 
----
-
-## Bước 2: Chuẩn bị MÁY CHỦ (chỉ làm trên 1 máy)
-
-### 2.1 Cài và bật MySQL bằng Laragon
-1. Tải và cài **Laragon** (bản Full).
-2. Mở Laragon → bấm **Start All**. Thấy MySQL báo chạy là được.
-
-### 2.2 Nhập dữ liệu (database)
-Trong Laragon bấm nút **Database** để mở HeidiSQL:
-1. Bấm **Open** để kết nối (User `root`, Password **để trống**).
-2. Menu **File → Run SQL file...** → chọn file **`database\haidilao_pos_db.sql`** trong thư mục project.
-3. Chạy xong, bấm **F5**. Bên trái phải có database **`haidilao_pos_db`**.
-
-> File `.sql` tự tạo database, không cần tạo trước. Dùng XAMPP thay Laragon cũng được: vào phpMyAdmin → tab **Import** → chọn file `.sql` → **Go**.
-
-### 2.3 Mở cổng 8888 cho máy khác vào được
-1. Trong thư mục project, **chuột phải** file **`MoCongFirewall_8888.bat`** → **Run as administrator** → bấm **Yes**.
-2. Vào **Settings → Network & Internet → Wi-Fi** → bấm vào mạng đang dùng → chọn **Private network**.
-
----
+> Database của bản cũ vẫn dùng được: khi bật máy chủ, chương trình **tự nâng cấp** (thêm bảng, thêm cột, chuyển dữ liệu cũ).
+> Nên chạy `XuatDatabase.bat` để sao lưu trước.
 
 ## Bước 3: Cho tất cả các máy vào CÙNG một mạng
 
-- Nên dùng **điểm phát Wi-Fi (hotspot) từ điện thoại**: 1 điện thoại phát, mọi laptop cùng kết nối vào.
-- **Không dùng Wi-Fi của trường hay quán cà phê.** Các mạng này thường chặn các máy kết nối với nhau, nên app sẽ báo "Không kết nối được tới Server".
+Nên dùng **hotspot điện thoại** hoặc router riêng. **Không dùng Wi-Fi trường / quán cà phê** (thường chặn các máy kết nối với nhau).
+
+## Bước 4: Chạy chương trình
+
+Trên mỗi máy, nhấp đúp **`ChayHaidilao.bat`** → chọn vai trò của máy:
+
+1. **Máy chủ** (bật trước): đăng nhập `admin` / `admin123`. Server tự khởi động, ô **Database** phải xanh.
+2. **Quầy Lễ tân**: đăng nhập `thungan` / `123456`. Chương trình tự tìm máy chủ.
+3. **Màn hình Bếp**: đăng nhập `bep` / `123456`.
+4. **Nhân viên phục vụ**: đăng nhập `phucvu1` / `123456` (máy khác dùng `phucvu2`).
+5. **Tablet tại bàn**: chọn bàn từ danh sách máy chủ gửi về (mỗi máy một bàn khác nhau). Lần sau mở lên tự vào đúng bàn.
+
+> **Chỉ có 1 máy?** Bấm **"Chạy thử tất cả trên máy này"** để mở máy chủ + Lễ tân + Bếp + Tablet bàn 1 cùng lúc.
 
 ---
 
-## Bước 4: Chạy chương trình (làm ĐÚNG thứ tự)
+## Bước 5: Quy trình phục vụ để thử
 
-Trên mỗi máy, **nhấp đúp file `ChayHaidilao.bat`** sẽ hiện màn hình chọn chức năng.
+| Bước | Ở máy | Làm gì | Kết quả |
+|---|---|---|---|
+| 1 | Lễ tân | **+ Xếp bàn cho khách** → nhập số khách, **tên khách**, chọn **nhân viên phục vụ** (thấy mỗi người đang phụ trách mấy bàn) → **Mở bàn** | Bàn chuyển *Đang phục vụ*, Tablet hiện lời chào và tên phục vụ, máy Phục vụ thấy bàn mới được giao |
+| 2 | Tablet | Chọn món / combo, ghi chú từng món, ghi chú chung → **Gửi đơn xuống bếp** | Đơn có **STT trong ngày** (#001...), Lễ tân và Bếp nhận ngay |
+| 3 | Bếp | **Bắt đầu nấu** → **Xong** | Tablet thấy trạng thái món; máy Phục vụ của bàn được báo "món xong - mang ra" |
+| 4 | Phục vụ (hoặc Lễ tân) | Chọn món trong "Món cần mang ra" → **Đã mang món ra** | Đơn chuyển *Đã phục vụ* |
+| 5 | Tablet | **Gọi phục vụ** / tab **Nhắn nhân viên** | Tin và chuông tới **nhân viên phục vụ của bàn**; Lễ tân cũng thấy để điều phối |
+| 5b | Phục vụ / Lễ tân | Bấm vào bàn → trả lời (có câu trả lời nhanh) | Tablet hiện tin kèm tên người trả lời; Lễ tân có tab **Tin nhắn** chia riêng từng bàn, lọc theo lượt khách / hôm nay / 7 ngày |
+| 6 | Tablet | **Thanh toán** → xem hóa đơn tạm tính → chọn *Tiền mặt* / *Chuyển khoản* → **Gửi yêu cầu** | Lễ tân nhận yêu cầu thanh toán |
+| 7 | Lễ tân | Bấm vào bàn → **Thanh toán** → giảm giá, tiền khách đưa → **Xác nhận** | In hóa đơn, bàn chuyển *Cần dọn*, Tablet hiện lời cảm ơn |
+| 8 | Lễ tân | **Đã dọn bàn xong** | Bàn về *Trống* |
+| 9 | Lễ tân | Tab **Đặt bàn** → **+ Đặt bàn mới** → khi khách đến bấm **Khách đã đến - nhận bàn** | Thẻ bàn hiện *Đã đặt* trước giờ hẹn 60 phút |
+| 10 | Máy chủ | **Thống kê doanh thu** | Doanh thu, biểu đồ theo ngày, món bán chạy, theo bàn, theo nhân viên |
+| 11 | Máy chủ | **Lịch sử tin nhắn** → lọc ngày, bàn, từ khóa / tên nhân viên | Xem lại hội thoại khi khách thắc mắc / khiếu nại, xuất CSV |
 
-**① Máy chủ chạy trước**
-1. Bấm nút **1. [MÁY CHỦ]** → bấm **KHỞI ĐỘNG SERVER (8888)**.
-2. Ô **MYSQL** phải chuyển **xanh** ("KẾT NỐI OK"). Nếu đỏ thì xem lại Bước 2.
-3. Ô nhật ký bên phải in ra địa chỉ IP, ví dụ:
-   ```
-   => ... nhập IP: 172.31.160.1    (card mạng: Hyper-V Virtual Ethernet Adapter)   ← card ẢO, BỎ QUA
-   => ... nhập IP: 192.168.43.25   (card mạng: Intel(R) Wireless-AC 8265)          ← card WI-FI, DÙNG IP NÀY
-   ```
-   **Ghi lại IP của dòng có chữ Wi-Fi / Wireless** và gửi cho các bạn còn lại.
+### Các quy tắc nghiệp vụ hệ thống tự kiểm tra
 
-**② Máy Lễ tân**
-Gõ IP máy chủ vào ô **"Địa chỉ IP Máy Chủ POS"** → bấm nút **2. [LỄ TÂN]**.
+- Khách **phải ra quầy Lễ tân** để được xếp bàn (hoặc nhận bàn đặt trước) thì Tablet mới gọi món được.
+- **Tên khách bắt buộc**; **số khách không được vượt số ghế** của bàn (khi mở bàn, sửa thông tin, nhận bàn, chuyển bàn).
+- Bàn **đã gọi món thì phải thanh toán** mới trả bàn được. Khách về khi chưa gọi món: Lễ tân dùng **Hủy bàn** (giữ tiền cọc nếu có).
+- Không thanh toán khi còn món **chưa mang ra**; không mở bàn hay chuyển khách sang bàn **chưa dọn**.
+- Đặt bàn: không trùng giờ cùng bàn (giữ bàn 2 giờ), đủ ghế, không đặt vào giờ đã qua; không đánh "Không đến" trước giờ hẹn.
+- **Máy chủ tự tính tiền** theo giá trong database, không tin giá Tablet gửi lên.
+- Nhân viên phục vụ chỉ xem / nhắn / đánh dấu "đã mang ra" cho **các bàn Lễ tân giao cho mình**; không hủy đơn, không thanh toán.
 
-**③ Các máy Tablet**
-Gõ IP máy chủ → bấm nút **3. [TABLET]** → chọn bàn.
-⚠ **Mỗi máy chọn một bàn KHÁC nhau** (Tablet_Ban1, Tablet_Ban2, Tablet_Ban3...).
-
-Kết nối thành công khi:
-- Bên **Lễ tân**, thẻ bàn chuyển màu **xanh lá**.
-- Bên **Tablet**, thanh đỏ trên cùng ghi **"Sẵn sàng phục vụ · Lễ tân: trực tuyến"** và thực đơn có hình món ăn.
-
----
-
-## Bước 5: Thử các chức năng
-
-| Làm gì | Ở máy | Kết quả mong đợi |
-|---|---|---|
-| Bấm **+ Thêm** vài món → **GỬI ĐƠN XUỐNG BẾP** | Tablet | Lễ tân nhận đơn mới, thẻ bàn chuyển **cam** |
-| Chọn đơn → **XÁC NHẬN CHUYỂN BẾP** | Lễ tân | Tablet nhận thông báo trạng thái món |
-| Bấm **[CHUÔNG] Gọi Nhân Viên** | Tablet | Thẻ bàn bên Lễ tân chuyển **đỏ** |
-| Gõ tin nhắn → **Gửi** | Tablet | Lễ tân nhận được; Tablet hiện "→ Đã chuyển tới Lễ tân" |
-| Chọn bàn trong ô bên dưới → gõ trả lời → **Gửi Phản Hồi** | Lễ tân | Đúng bàn đó nhận được |
-| **THỰC ĐƠN** → chọn món → **CHỌN ẢNH** → **LƯU SỬA ĐỔI** | Máy chủ | Thực đơn trên các Tablet tự cập nhật ảnh |
-| Chọn 1 Tablet trong bảng → **KHÓA CỔNG** | Máy chủ | Tablet đó bị ngắt và không vào lại được, đến khi bấm **MỞ CỔNG** |
-| Tắt Wi-Fi một Tablet, chờ khoảng 15 giây | Tablet | Lễ tân thấy bàn đó chuyển **xám (OFFLINE)** |
-| Tắt rồi mở lại app Tablet | Tablet | Lịch sử tin nhắn cũ hiện lại |
-
-> **Chỉ có 1 máy?** Bấm nút **4. [CHẠY THỬ]** để mở Máy chủ + Lễ tân + 2 Tablet trên cùng một máy. Lưu ý: đóng 1 cửa sổ là tắt hết, và đừng thử **khóa cổng** ở chế độ này (sẽ tắt luôn Server).
+Danh sách đầy đủ 20 tình huống ngoại lệ có trong tài liệu phân tích nghiệp vụ của nhóm.
 
 ---
 
 ## Gặp lỗi thì làm gì?
 
-| Hiện tượng | Nguyên nhân thường gặp | Cách sửa |
-|---|---|---|
-| Nhấp `ChayHaidilao.bat` báo **chưa cài Java** | Chưa có Java | Làm Bước 1 |
-| Báo lỗi `UnsupportedClassVersionError` | Java quá cũ | Cài Java 17 trở lên |
-| **"Không kết nối được tới Server ... (connect timed out)"** | Nhập sai IP (nhầm card ảo), khác mạng, hoặc Wi-Fi chặn | Lấy lại IP của card **Wi-Fi** trên máy chủ; dùng hotspot điện thoại |
-| **"... (Connection refused)"** | Máy chủ chưa bấm KHỞI ĐỘNG SERVER | Bấm Khởi động trên máy chủ |
-| Ô **MYSQL đỏ** trên máy chủ | Laragon chưa Start, hoặc chưa nhập database | Start All trong Laragon; làm lại Bước 2.2 |
-| Tablet chỉ có thực đơn mặc định, **không có ảnh** | Database trên máy chủ trống | Nhập lại file `.sql` (Bước 2.2) |
-| Hiện **"Không thể kết nối hệ thống: ... đang bị khóa"** | Máy đó đang bị khóa cổng | Máy chủ bấm **MỞ CỔNG** → mở lại app |
-| Hai bàn bị lẫn tin nhắn | Hai máy chọn **trùng tên bàn** | Mỗi máy chọn bàn khác nhau |
+| Hiện tượng | Cách sửa |
+|---|---|
+| `ChayHaidilao.bat` báo chưa cài Java / `UnsupportedClassVersionError` | Cài Java 17 trở lên (Bước 1) |
+| Lễ tân / Bếp / Tablet cứ báo **"Đang tìm máy chủ..."** | Máy chủ chưa mở, khác mạng Wi-Fi, chưa chạy `MoCongFirewall_8888.bat`, hoặc Wi-Fi chặn → dùng hotspot điện thoại |
+| Máy chủ báo **chưa kết nối được MySQL** | Laragon chưa Start All |
+| Đăng nhập báo **sai tài khoản** | Xem bảng tài khoản mẫu; sai 5 lần trong 1 phút sẽ bị tạm chặn 1 phút |
+| Tablet báo **"Bàn chưa được mở"** | Đúng quy trình: khách ra quầy, Lễ tân **Xếp bàn** cho bàn đó |
+| **"Thiết bị đã bị quản trị viên khóa"** | Máy chủ → **Mở khóa thiết bị** → mở lại app trên máy đó |
+| Máy chủ báo **không mở được cổng 8888** | Đã có một máy chủ đang chạy, tắt bản cũ |
 
-**Kiểm tra mạng nhanh:** trên máy Lễ tân hoặc Tablet, mở **PowerShell** và gõ (thay IP của máy chủ):
-```
-Test-NetConnection 192.168.43.25 -Port 8888
-```
-Ra `TcpTestSucceeded : True` là mạng thông. Ra `False` thì xem lại Bước 2.3 và Bước 3.
+**Muốn chỉ định IP máy chủ bằng tay** (mạng chặn broadcast): chạy `java -Dpos.server=192.168.1.10 -jar dist\HaidilaoNetworkPOS.jar`.
 
 ---
 
-## Dành cho ai muốn mở và sửa code
+## Dành cho ai mở và sửa code
 
-- Mở bằng **NetBeans** (bản 17 trở lên): **File → Open Project** → chọn thư mục project. Driver MySQL đã có sẵn trong `lib/`.
+- Mở bằng **NetBeans 17+**: **File → Open Project**. Driver MySQL có sẵn trong `lib/`.
+- Các form (`*.form`) mở và sửa được bằng **GUI Builder (Design)** của NetBeans.
 - Sửa xong: chuột phải project → **Clean and Build** để tạo lại `dist/HaidilaoNetworkPOS.jar`.
-- MySQL mặc định: `root`, mật khẩu rỗng, database `haidilao_pos_db`. Nếu máy chủ có mật khẩu MySQL, sửa `PASS` trong `src/com/haidilao/pos/database/DatabaseManager.java`.
+- MySQL mặc định `root`, mật khẩu rỗng, database `haidilao_pos_db`. Có thể đổi khi chạy:
+  `java -Dpos.db.pass=matkhau -Dpos.db.name=ten_db -jar dist\HaidilaoNetworkPOS.jar`.
+- Mở thẳng một vai trò: `java -jar dist\HaidilaoNetworkPOS.jar server | reception | kitchen | waiter | tablet [Tablet_Ban1]`.
 
 ### Cấu trúc thư mục
 ```
-├─ dist/                        File chạy: HaidilaoNetworkPOS.jar + lib/ (driver MySQL)
-├─ database/haidilao_pos_db.sql Dữ liệu mẫu MySQL (thực đơn + ảnh, đơn, chat)
-├─ ChayHaidilao.bat             Nhấp đúp để chạy
-├─ MoCongFirewall_8888.bat      Mở cổng 8888 (chỉ máy chủ, Run as administrator)
-├─ XuatDatabase.bat             Xuất lại database ra file .sql
-├─ HUONG_DAN_CHAY_NHIEU_MAY.md  Hướng dẫn chi tiết hơn
-├─ lib/                         Driver MySQL cho NetBeans
+├─ dist/                         File chạy: HaidilaoNetworkPOS.jar + lib/ (driver MySQL)
+├─ database/haidilao_pos_db.sql  Dữ liệu mẫu: thực đơn + ảnh, combo, bàn, tài khoản mẫu (không có đơn / tin nhắn)
+├─ ChayHaidilao.bat              Nhấp đúp để chạy
+├─ MoCongFirewall_8888.bat       Mở TCP 8888 + UDP 8889 (chỉ máy chủ, Run as administrator)
+├─ XuatDatabase.bat              Xuất database ra file .sql (sao lưu)
 └─ src/com/haidilao/pos/
-   ├─ server/    PosServer (lắng nghe cổng 8888), ClientSession (1 luồng cho mỗi máy kết nối)
-   ├─ client/    PosClient (kết nối, tự kết nối lại, heartbeat)
-   ├─ protocol/  Giao thức: định dạng gói tin LỆNH|dữ liệu|...
-   ├─ security/  Mã hóa AES, xác thực, phân quyền
-   ├─ database/  Truy vấn MySQL
-   ├─ admin/     Hộp thoại quản lý thực đơn
-   └─ *.java     Giao diện: ServerAdminFrame, ReceptionFrame, TabletClientFrame
+   ├─ server/    PosServer (TCP 8888), ClientSession (1 luồng / máy), DiscoveryServer (UDP 8889), RestaurantService (nghiệp vụ)
+   ├─ client/    PosClient (kết nối, tự kết nối lại, heartbeat), ServerLocator (tìm máy chủ bằng broadcast)
+   ├─ protocol/  Giao thức: LỆNH|trường|..., chữ tự do được mã hóa URL
+   ├─ security/  Mã hóa AES, băm mật khẩu, xác thực, phân quyền lệnh theo vai trò (RBAC)
+   ├─ database/  DAO từng bảng + SchemaMigrator (tự tạo / nâng cấp database)
+   ├─ ui/        Bộ màu chung, khung chat bong bóng, thẻ bàn, biểu đồ, lưới tự co giãn
+   ├─ admin/     Quản lý thực đơn, combo, bàn, nhân viên, thống kê, cài đặt
+   └─ *.java     Màn hình: ServerAdminFrame, ReceptionFrame, KitchenFrame, WaiterFrame, TabletClientFrame và các hộp thoại
 ```

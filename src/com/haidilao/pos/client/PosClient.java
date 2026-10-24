@@ -11,18 +11,26 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 /**
- * Điều phối kết nối Socket Client (Tablet và Quầy Lễ Tân)
+ * Điều phối kết nối Socket Client (Tablet, Quầy Lễ tân, Màn hình Bếp)
  * Tích hợp tự động kết nối lại (Auto-Reconnect) và bắt tay bảo mật
  */
 public class PosClient {
     private static final int CONNECT_TIMEOUT_MS = 3000;
 
-    private final String host;
-    private final int port;
+    private volatile String host;   // null = tự tìm máy chủ trong mạng (UDP broadcast) trước mỗi lần kết nối
+    private volatile int port;
+    private final boolean autoDiscover;
     private final String role;
     private final String deviceId;
     private final String authKey;
+    private final String username;   // tài khoản nhân viên (Lễ tân, Bếp); Tablet để null
+    private final String password;
     private ClientEventListener listener;
+
+    // Thông tin nhân viên Server trả về trong AUTH_ACK
+    private volatile int staffId;
+    private volatile String staffName = "";
+    private volatile String staffRole = "";
 
     private Socket socket;
     private BufferedReader in;
@@ -32,11 +40,35 @@ public class PosClient {
     private volatile boolean isKicked = false;
 
     public PosClient(String host, int port, String role, String deviceId, String authKey) {
-        this.host = host;
+        this(host, port, role, deviceId, authKey, null, null);
+    }
+
+    /** Máy nhân viên: đăng nhập kèm tài khoản + mật khẩu */
+    public PosClient(String host, int port, String role, String deviceId, String authKey, String username, String password) {
+        this.autoDiscover = (host == null || host.trim().isEmpty() || "auto".equalsIgnoreCase(host.trim()));
+        this.host = autoDiscover ? null : host.trim();
         this.port = port;
         this.role = role;
         this.deviceId = deviceId;
         this.authKey = authKey;
+        this.username = username;
+        this.password = password;
+    }
+
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public String getStaffRole() {
+        return staffRole;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
     }
 
     public void setListener(ClientEventListener listener) {
@@ -58,7 +90,16 @@ public class PosClient {
                 boolean connectedThisRound = false;
                 String reason = "Server đã đóng kết nối";
                 try {
-                    // Đặt thời gian chờ 3 giây: nhập sai IP thì báo lỗi nhanh, không bị treo lâu
+                    if (autoDiscover) {
+                        // Tìm máy chủ trong mạng Wi-Fi mỗi lần kết nối, nên máy chủ đổi IP (DHCP) vẫn tìm lại được
+                        ServerLocator.Found found = ServerLocator.discover(ProtocolConstants.DISCOVERY_TIMEOUT_MS);
+                        if (found == null) {
+                            throw new IOException("Chưa tìm thấy máy chủ trong mạng Wi-Fi (máy chủ đã bật chưa?)");
+                        }
+                        host = found.host;
+                        port = found.port;
+                    }
+                    // Đặt thời gian chờ 3 giây: máy chủ không phản hồi thì báo lỗi nhanh, không bị treo lâu
                     socket = new Socket();
                     socket.connect(new InetSocketAddress(host, port), CONNECT_TIMEOUT_MS);
                     out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
@@ -68,7 +109,9 @@ public class PosClient {
                     String realMac = getLocalMacAddress();
 
                     // Gửi gói tin xác thực bắt tay AUTH kèm MAC thật (Mã hóa AES-128 trước khi đưa lên mạng)
-                    String rawAuth = NetworkPacket.buildAuth(role, deviceId, authKey, realMac);
+                    String rawAuth = (username == null)
+                            ? NetworkPacket.buildAuth(role, deviceId, authKey, realMac)
+                            : NetworkPacket.buildAuth(role, deviceId, authKey, realMac, username, password);
                     out.println(CryptoManager.encrypt(rawAuth));
 
                     // Quá 15 giây không nhận được gì (kể cả PONG) thì readLine() ném SocketTimeoutException -> coi như mất kết nối
@@ -90,6 +133,13 @@ public class PosClient {
                     }
                     if (!authReply.startsWith(CommandType.AUTH_ACK.name())) {
                         throw new IOException("Phản hồi xác thực không hợp lệ");
+                    }
+                    // AUTH_ACK|LỜI_CHÀO|MÃ_NV|TÊN_NV|VAI_TRÒ_NV (Tablet chỉ có lời chào)
+                    String[] ack = NetworkPacket.split(authReply);
+                    if (ack.length >= 5) {
+                        staffId = NetworkPacket.parseInt(ack[2], 0);
+                        staffName = NetworkPacket.dec(ack[3]);
+                        staffRole = NetworkPacket.dec(ack[4]);
                     }
 
                     isConnected = true;
@@ -141,7 +191,7 @@ public class PosClient {
                         listener.onDisconnected(reason);
                     } else if (!failReported) {
                         failReported = true;
-                        listener.onDisconnected("Không kết nối được tới Server " + host + ":" + port + " (" + reason + ")");
+                        listener.onDisconnected(host == null ? reason : "Không kết nối được tới máy chủ " + host + ":" + port + " (" + reason + ")");
                     }
                 }
 

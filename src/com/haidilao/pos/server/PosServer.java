@@ -1,9 +1,11 @@
 package com.haidilao.pos.server;
 
 import com.haidilao.pos.database.DatabaseManager;
+import com.haidilao.pos.database.SessionDao;
+import com.haidilao.pos.database.TableDao;
+import com.haidilao.pos.model.DiningTable;
 import com.haidilao.pos.model.NetworkDevice;
 import com.haidilao.pos.protocol.NetworkPacket;
-import com.haidilao.pos.protocol.ProtocolConstants;
 import com.haidilao.pos.security.FirewallManager;
 
 import java.io.IOException;
@@ -18,7 +20,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Lõi POS Server lắng nghe TCP cổng 8888, tích hợp Firewall ACL và điều phối mạng
+ * Lõi POS Server: lắng nghe TCP cổng 8888, mỗi client một luồng (ClientSession),
+ * giữ danh sách phiên đang kết nối theo vai trò và chuyển tiếp bản tin giữa Tablet, Lễ tân, Bếp.
  */
 public class PosServer {
     private final int port;
@@ -26,9 +29,12 @@ public class PosServer {
     private volatile boolean isRunning = false;
     private final FirewallManager firewall;
     private ServerEventListener listener;
+    private DiscoveryServer discovery;
 
     private final Map<String, ClientSession> tabletSessions = new ConcurrentHashMap<>();
     private final Map<String, ClientSession> receptionSessions = new ConcurrentHashMap<>();
+    private final Map<String, ClientSession> kitchenSessions = new ConcurrentHashMap<>();
+    private final Map<String, ClientSession> waiterSessions = new ConcurrentHashMap<>();
 
     public PosServer(int port) {
         this.port = port;
@@ -58,19 +64,18 @@ public class PosServer {
             log("[POS_SERVER] Không tìm thấy card mạng LAN / Wi-Fi nào đang hoạt động (chỉ chạy được 127.0.0.1)");
         }
         for (String ip : lanIps) {
-            log("[POS_SERVER] => Trên các máy Lễ tân / Tablet khác, nhập IP: " + ip);
+            log("[POS_SERVER] Địa chỉ máy chủ trong mạng: " + ip + " (các máy khác tự tìm thấy, không cần nhập)");
         }
-        log("[ACL-ACTIVE] Rule 10: permit tcp 192.168.20.0/24 host 192.168.10.50 eq 8888 (Tablet Wi-Fi)");
-        log("[ACL-ACTIVE] Rule 20: permit tcp 192.168.10.0/24 host 192.168.10.50 eq 8888 (Quầy Lễ Tân)");
-        log("[ACL-ACTIVE] Rule 30: deny ip 192.168.20.0/24 192.168.10.0/24 (Chặn P2P Tablet sang Lễ tân)");
-        log("[CRYPTO-ACTIVE] Đã kích hoạt mã hóa dữ liệu đường truyền: AES-128 CBC (Data-in-Transit Encryption)");
+        discovery = new DiscoveryServer(port, this);
+        discovery.start();
+        log("[SECURITY] Mã hóa đường truyền AES-128 CBC | Xác thực thiết bị bằng khóa + tài khoản nhân viên | Phân quyền lệnh theo vai trò (RBAC)");
 
         Thread acceptThread = new Thread(() -> {
             while (isRunning) {
                 try {
                     Socket socket = serverSocket.accept();
                     ClientSession session = new ClientSession(socket, this, firewall);
-                    new Thread(session).start();
+                    new Thread(session, "ClientSession-" + socket.getInetAddress().getHostAddress()).start();
                 } catch (IOException e) {
                     if (!isRunning) break;
                     log("[ERROR] Lỗi chấp nhận kết nối: " + e.getMessage());
@@ -84,14 +89,19 @@ public class PosServer {
 
     public void stop() {
         isRunning = false;
+        if (discovery != null) discovery.stop();
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
             }
             tabletSessions.values().forEach(ClientSession::closeConnection);
             receptionSessions.values().forEach(ClientSession::closeConnection);
+            kitchenSessions.values().forEach(ClientSession::closeConnection);
+            waiterSessions.values().forEach(ClientSession::closeConnection);
+            waiterSessions.clear();
             tabletSessions.clear();
             receptionSessions.clear();
+            kitchenSessions.clear();
             if (listener != null) {
                 listener.onServerStopped();
             }
@@ -132,17 +142,19 @@ public class PosServer {
         return result;
     }
 
+    // ------------------------------------------------------------------ đăng ký / hủy phiên
+
     public void registerTablet(String deviceId, ClientSession session) {
         ClientSession old = tabletSessions.put(deviceId, session);
         if (old != null && old != session) {
             log("[CẢNH BÁO] Tên thiết bị [" + deviceId + "] đã có phiên khác đang dùng -> phiên mới thay thế. Kiểm tra xem 2 máy có chọn trùng tên bàn không!");
         }
         broadcastToReception(NetworkPacket.buildTableState(deviceId, "ONLINE"));
-        // Cho Tablet biết hiện có bao nhiêu quầy Lễ tân đang trực tuyến
+        broadcastTableInfo(deviceId);
+        // Cho Tablet biết hiện có bao nhiêu quầy Lễ tân đang trực tuyến, và thông tin khách nếu bàn đã được mở
         session.sendMessage("RECEPTION_STATE|" + receptionSessions.size());
-        if (listener != null) {
-            listener.onDeviceConnected(deviceId, session.getVlanName(), session.getSimulatedIp(), session.getMacAddress(), "ACL Permitted (8888)");
-        }
+        session.sendMessage(RestaurantService.buildTabletSessionInfo(SessionDao.getOpenSession(deviceId)));
+        notifyConnected(deviceId, session);
     }
 
     /**
@@ -152,6 +164,7 @@ public class PosServer {
     public void unregisterTablet(String deviceId, ClientSession session) {
         if (!tabletSessions.remove(deviceId, session)) return;
         broadcastToReception(NetworkPacket.buildTableState(deviceId, "OFFLINE"));
+        broadcastTableInfo(deviceId);
         if (listener != null) {
             listener.onDeviceDisconnected(deviceId);
         }
@@ -167,9 +180,7 @@ public class PosServer {
             session.sendMessage(NetworkPacket.buildTableState(tbl, "ONLINE"));
         }
         broadcastToTablets("RECEPTION_STATE|" + receptionSessions.size());
-        if (listener != null) {
-            listener.onDeviceConnected(deviceId, session.getVlanName(), session.getSimulatedIp(), session.getMacAddress(), "SecureSticky (Up)");
-        }
+        notifyConnected(deviceId, session);
     }
 
     public void unregisterReception(String deviceId, ClientSession session) {
@@ -177,6 +188,71 @@ public class PosServer {
         broadcastToTablets("RECEPTION_STATE|" + receptionSessions.size());
         if (listener != null) {
             listener.onDeviceDisconnected(deviceId);
+        }
+    }
+
+    public void registerKitchen(String deviceId, ClientSession session) {
+        ClientSession old = kitchenSessions.put(deviceId, session);
+        if (old != null && old != session) {
+            log("[CẢNH BÁO] Tên màn hình Bếp [" + deviceId + "] đã có phiên khác đang dùng -> phiên mới thay thế.");
+        }
+        notifyConnected(deviceId, session);
+    }
+
+    public void unregisterKitchen(String deviceId, ClientSession session) {
+        if (!kitchenSessions.remove(deviceId, session)) return;
+        if (listener != null) {
+            listener.onDeviceDisconnected(deviceId);
+        }
+    }
+
+    public void registerWaiter(String deviceId, ClientSession session) {
+        ClientSession old = waiterSessions.put(deviceId, session);
+        if (old != null && old != session) {
+            log("[CẢNH BÁO] Máy phục vụ [" + deviceId + "] đã có phiên khác đang dùng -> phiên mới thay thế.");
+        }
+        notifyConnected(deviceId, session);
+        broadcastToReception("WAITERS_CHANGED");
+    }
+
+    public void unregisterWaiter(String deviceId, ClientSession session) {
+        if (!waiterSessions.remove(deviceId, session)) return;
+        broadcastToReception("WAITERS_CHANGED");
+        if (listener != null) {
+            listener.onDeviceDisconnected(deviceId);
+        }
+    }
+
+    /** Gửi cho (các máy của) nhân viên phục vụ có mã staffId, trừ phiên except. Trả về true nếu có ít nhất 1 máy nhận. */
+    public boolean sendToWaiter(int staffId, String msg, ClientSession except) {
+        boolean sent = false;
+        if (staffId <= 0) return false;
+        for (ClientSession w : waiterSessions.values()) {
+            if (w.getStaffId() == staffId && w != except) {
+                w.sendMessage(msg);
+                sent = true;
+            }
+        }
+        return sent;
+    }
+
+    public boolean isWaiterOnline(int staffId) {
+        for (ClientSession w : waiterSessions.values()) {
+            if (w.getStaffId() == staffId) return true;
+        }
+        return false;
+    }
+
+    public void broadcastToWaiters(String msg) {
+        for (ClientSession w : waiterSessions.values()) {
+            w.sendMessage(msg);
+        }
+    }
+
+    private void notifyConnected(String deviceId, ClientSession session) {
+        if (listener != null) {
+            String who = session.getStaffName().isEmpty() ? "Đang kết nối" : "Đang kết nối (" + session.getStaffName() + ")";
+            listener.onDeviceConnected(deviceId, session.getRole().getDescription(), session.getRemoteIp(), session.getMacAddress(), who);
         }
     }
 
@@ -196,6 +272,12 @@ public class PosServer {
         return null;
     }
 
+    public boolean isTabletOnline(String tableId) {
+        return tabletSessions.containsKey(tableId);
+    }
+
+    // ------------------------------------------------------------------ gửi bản tin
+
     public void broadcastToReception(String msg) {
         for (ClientSession r : receptionSessions.values()) {
             r.sendMessage(msg);
@@ -213,55 +295,81 @@ public class PosServer {
         }
     }
 
+    public void broadcastToKitchen(String msg) {
+        for (ClientSession k : kitchenSessions.values()) {
+            k.sendMessage(msg);
+        }
+    }
+
     public void broadcastToTablets(String msg) {
         for (ClientSession t : tabletSessions.values()) {
             t.sendMessage(msg);
         }
     }
 
-    public void notifyRevenueChanged(long totalRevenue) {
+    /** Gửi Tablet của bàn (nếu đang kết nối) */
+    public void sendToTablet(String tableId, String msg) {
+        ClientSession t = tabletSessions.get(tableId);
+        if (t != null) {
+            t.sendMessage(msg);
+        }
+    }
+
+    /** Báo cho mọi quầy Lễ tân trạng thái mới nhất của một bàn (TABLE_INFO) */
+    public void broadcastTableInfo(String tableId) {
+        // Bàn đổi trạng thái / đổi phục vụ: máy phục vụ tải lại danh sách bàn được giao
+        broadcastToWaiters("MY_TABLES_CHANGED|" + tableId);
+        if (receptionSessions.isEmpty()) return;
+        DiningTable t = TableDao.getTable(tableId);
+        if (t == null) return;
+        broadcastToReception(RestaurantService.buildTableInfo(t, SessionDao.getOpenSession(tableId), isTabletOnline(tableId),
+                RestaurantService.upcomingReservations().get(tableId)));
+    }
+
+    /** Quản lý vừa thêm / sửa / xóa bàn: các quầy Lễ tân tải lại sơ đồ bàn */
+    public void broadcastTablesChanged() {
+        broadcastToReception("TABLES_CHANGED");
+    }
+
+    public void notifyRevenueChanged() {
         if (listener != null) {
-            listener.onRevenueUpdated(totalRevenue);
+            listener.onRevenueUpdated(DatabaseManager.getTotalRevenue());
         }
     }
 
+    // ------------------------------------------------------------------ khóa thiết bị
+
     /**
-     * Khóa cổng thiết bị vi phạm (Err-Disable / Shutdown) từ Admin
+     * Quản trị khóa một thiết bị: đang kết nối thì ngắt ngay, lần sau đăng nhập bị từ chối cho tới khi được mở khóa.
+     * Trả về false nếu thiết bị chưa từng kết nối (không có trong network_devices).
      */
-    public boolean shutdownDevice(String deviceId) {
+    public boolean lockDevice(String deviceId) {
+        if (DatabaseManager.getDeviceById(deviceId) == null) return false;
+        DatabaseManager.updateDeviceSecurityStatus(deviceId, NetworkDevice.STATUS_LOCKED);
+        DatabaseManager.saveSecurityLog(deviceId, null, "DEVICE_LOCK", "Quản trị viên khóa thiết bị");
+
         ClientSession session = tabletSessions.get(deviceId);
-        if (session == null) {
-            session = receptionSessions.get(deviceId);
-        }
-
+        if (session == null) session = receptionSessions.get(deviceId);
+        if (session == null) session = kitchenSessions.get(deviceId);
+        if (session == null) session = waiterSessions.get(deviceId);
         if (session != null) {
-            session.sendMessage("KICKED|Cổng Switch của thiết bị [" + deviceId + "] đã bị đưa vào trạng thái Err-Disable bởi PC_Admin!");
+            session.sendMessage("KICKED|Thiết bị [" + deviceId + "] đã bị quản trị viên khóa. Liên hệ quản lý để mở khóa.");
             session.closeConnection();
-            log("[PORT-SECURITY] PC_Admin đã kích hoạt Violation Shutdown đối với: " + deviceId);
-            DatabaseManager.saveSecurityLog(deviceId, session.getSimulatedIp(), "PORT_SHUTDOWN", "PC_Admin kích hoạt Violation Shutdown (Err-Disable)");
-            DatabaseManager.updateDeviceSecurityStatus(deviceId, "ERR_DISABLE");
-            return true;
         }
-        return false;
-    }
-
-    /**
-     * Mở khóa cổng thiết bị (No Shutdown) từ Admin
-     */
-    public boolean unlockDevice(String deviceId) {
-        DatabaseManager.updateDeviceSecurityStatus(deviceId, "STICKY_ACTIVE");
-        log("[PORT-SECURITY] PC_Admin đã mở khóa cổng Switch (no shutdown) cho: " + deviceId);
-        DatabaseManager.saveSecurityLog(deviceId, null, "PORT_RESTORE", "PC_Admin mở khóa cổng (no shutdown)");
+        log("[SECURITY] Quản trị viên đã khóa thiết bị: " + deviceId + (session != null ? " (đã ngắt kết nối)" : ""));
         return true;
     }
 
-    /**
-     * Phục hồi toàn bộ cổng mạng đang bị Err-Disable
-     */
-    public void restoreAllPorts() {
-        DatabaseManager.restoreAllDevicePorts();
-        log("[PORT-SECURITY] PC_Admin đã mở khóa (no shutdown) toàn bộ cổng Switch trên hệ thống!");
-        DatabaseManager.saveSecurityLog("ALL", null, "PORT_RESTORE", "PC_Admin mở khóa toàn bộ cổng đang bị khóa");
+    public void unlockDevice(String deviceId) {
+        DatabaseManager.updateDeviceSecurityStatus(deviceId, NetworkDevice.STATUS_ACTIVE);
+        DatabaseManager.saveSecurityLog(deviceId, null, "DEVICE_UNLOCK", "Quản trị viên mở khóa thiết bị");
+        log("[SECURITY] Quản trị viên đã mở khóa thiết bị: " + deviceId);
+    }
+
+    public void unlockAllDevices() {
+        DatabaseManager.unlockAllDevices();
+        DatabaseManager.saveSecurityLog("ALL", null, "DEVICE_UNLOCK", "Quản trị viên mở khóa toàn bộ thiết bị");
+        log("[SECURITY] Quản trị viên đã mở khóa toàn bộ thiết bị.");
     }
 
     public Map<String, ClientSession> getTabletSessions() {
@@ -270,5 +378,13 @@ public class PosServer {
 
     public Map<String, ClientSession> getReceptionSessions() {
         return Collections.unmodifiableMap(receptionSessions);
+    }
+
+    public Map<String, ClientSession> getWaiterSessions() {
+        return Collections.unmodifiableMap(waiterSessions);
+    }
+
+    public Map<String, ClientSession> getKitchenSessions() {
+        return Collections.unmodifiableMap(kitchenSessions);
     }
 }

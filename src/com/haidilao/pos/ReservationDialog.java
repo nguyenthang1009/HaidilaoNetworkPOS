@@ -1,0 +1,489 @@
+/*
+ * ReservationDialog.java
+ */
+package com.haidilao.pos;
+
+import com.haidilao.pos.client.MessageListener;
+import com.haidilao.pos.model.Reservation;
+import com.haidilao.pos.protocol.NetworkPacket;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+/**
+ * Thêm / sửa lượt đặt bàn trước: tên, SĐT, số khách, ngày giờ, khu vực, chọn bàn đủ ghế, tiền cọc, ghi chú.
+ * Server kiểm tra trùng giờ với lượt đặt khác của cùng bàn.
+ */
+public class ReservationDialog extends javax.swing.JDialog implements MessageListener {
+
+    private static int openCount = 0;
+    private final ReceptionFrame owner;
+    private final int reservationId;
+    private final List<String> tableIds = new ArrayList<>();
+    private String presetTable;
+
+    /**
+     * existing: lượt đặt cần sửa (các trường RESERVATION đã giải mã), null = đặt mới.
+     * presetTable: bàn được chọn sẵn (đặt từ thẻ bàn trên sơ đồ), defaultDay: ngày đang xem.
+     */
+    public ReservationDialog(ReceptionFrame owner, String[] existing, String presetTable, Date defaultDay) {
+        super(owner, true);
+        this.owner = owner;
+        this.reservationId = existing == null ? 0 : Integer.parseInt(existing[1]);
+        this.presetTable = existing == null ? presetTable : existing[7];
+        initComponents();
+        Set<String> areas = new TreeSet<>();
+        for (String[] i : owner.getTableInfos()) areas.add(i[4]);
+        for (String a : areas) cboArea.addItem(a);
+        spnGuests.addChangeListener(e -> refreshTables());
+        if (existing != null) {
+            lblTitle.setText("SỬA LƯỢT ĐẶT #" + existing[1]);
+            txtName.setText(existing[2]);
+            txtPhone.setText(existing[3]);
+            spnGuests.setValue(NetworkPacket.parseInt(existing[4], 2));
+            try {
+                Date at = new SimpleDateFormat(Reservation.DATE_TIME_FORMAT).parse(existing[5]);
+                txtDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(at));
+                cboTime.setSelectedItem(new SimpleDateFormat("HH:mm").format(at));
+            } catch (ParseException ignored) {}
+            if (!existing[9].isEmpty()) cboArea.setSelectedItem(existing[9]);
+            txtDeposit.setText(existing[10]);
+            txtNote.setText(existing[11]);
+        } else {
+            Date day = defaultDay.before(new Date()) ? new Date() : defaultDay;
+            txtDate.setText(new SimpleDateFormat("dd/MM/yyyy").format(day));
+            cboTime.setSelectedItem("18:30");
+        }
+        refreshTables();
+        owner.addListener(this);
+        openCount++;
+        pack();
+        setMinimumSize(new java.awt.Dimension(520, getHeight()));
+        setLocationRelativeTo(owner);
+    }
+
+    public static boolean isOpen() {
+        return openCount > 0;
+    }
+
+    @Override
+    public void dispose() {
+        if (isDisplayable()) {
+            openCount = Math.max(0, openCount - 1);
+            owner.removeListener(this);
+        }
+        super.dispose();
+    }
+
+    /** Danh sách bàn đủ ghế, đúng khu vực (bàn nhỏ nhất đủ chỗ lên trước) */
+    private void refreshTables() {
+        String keep = cboTable.getSelectedIndex() > 0 ? tableIds.get(cboTable.getSelectedIndex() - 1) : presetTable;
+        int guests = (Integer) spnGuests.getValue();
+        String area = (String) cboArea.getSelectedItem();
+        List<String[]> fit = new ArrayList<>();
+        for (String[] i : owner.getTableInfos()) {
+            if (NetworkPacket.parseInt(i[3], 0) < guests) continue;
+            if (area != null && !"Bất kỳ".equals(area) && !area.equals(i[4])) continue;
+            fit.add(i);
+        }
+        fit.sort(Comparator.comparingInt(i -> NetworkPacket.parseInt(i[3], 0)));
+        cboTable.removeAllItems();
+        tableIds.clear();
+        cboTable.addItem("(Chưa chọn bàn - xếp khi khách đến)");
+        for (String[] i : fit) {
+            tableIds.add(i[1]);
+            cboTable.addItem(i[2] + " · " + i[3] + " ghế · " + i[4]);
+        }
+        int idx = keep == null ? -1 : tableIds.indexOf(keep);
+        cboTable.setSelectedIndex(idx + 1);
+        presetTable = null;
+    }
+
+    @Override
+    public void onServerMessage(String[] f, String raw) {
+        if ("RESERVATION_SAVED".equals(f[0])) {
+            owner.toast("Đã lưu lượt đặt bàn của " + txtName.getText().trim() + ".");
+            dispose();
+        } else if ("RESERVATION_FAIL".equals(f[0])) {
+            lblError.setText("<html>" + NetworkPacket.dec(f[1]) + "</html>");
+            btnSave.setEnabled(true);
+            pack();
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        pnlHeader = new javax.swing.JPanel();
+        lblTitle = new javax.swing.JLabel();
+        lblSubtitle = new javax.swing.JLabel();
+        pnlForm = new javax.swing.JPanel();
+        lblName = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        lblPhone = new javax.swing.JLabel();
+        txtPhone = new javax.swing.JTextField();
+        lblGuests = new javax.swing.JLabel();
+        spnGuests = new javax.swing.JSpinner();
+        lblDate = new javax.swing.JLabel();
+        txtDate = new javax.swing.JTextField();
+        lblTime = new javax.swing.JLabel();
+        cboTime = new javax.swing.JComboBox<>();
+        lblArea = new javax.swing.JLabel();
+        cboArea = new javax.swing.JComboBox<>();
+        lblTable = new javax.swing.JLabel();
+        cboTable = new javax.swing.JComboBox<>();
+        lblDeposit = new javax.swing.JLabel();
+        txtDeposit = new javax.swing.JTextField();
+        lblNote = new javax.swing.JLabel();
+        scrollNote = new javax.swing.JScrollPane();
+        txtNote = new javax.swing.JTextArea();
+        lblHint = new javax.swing.JLabel();
+        lblError = new javax.swing.JLabel();
+        pnlButtons = new javax.swing.JPanel();
+        btnCancel = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Đặt bàn");
+
+        pnlHeader.setBackground(new java.awt.Color(142, 68, 173));
+        pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        pnlHeader.setLayout(new java.awt.BorderLayout(0, 4));
+
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitle.setText("ĐẶT BÀN TRƯỚC");
+        pnlHeader.add(lblTitle, java.awt.BorderLayout.NORTH);
+
+        lblSubtitle.setForeground(new java.awt.Color(232, 216, 240));
+        lblSubtitle.setText("Ghi nhận khách gọi điện hoặc đến quầy đặt bàn");
+        pnlHeader.add(lblSubtitle, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(pnlHeader, java.awt.BorderLayout.NORTH);
+
+        pnlForm.setBackground(new java.awt.Color(255, 255, 255));
+        pnlForm.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 18, 6, 18));
+        pnlForm.setLayout(new java.awt.GridBagLayout());
+
+        lblName.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblName.setForeground(new java.awt.Color(44, 62, 80));
+        lblName.setText("Tên khách *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblName, gridBagConstraints);
+
+        txtName.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        txtName.setColumns(22);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(txtName, gridBagConstraints);
+
+        lblPhone.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPhone.setForeground(new java.awt.Color(44, 62, 80));
+        lblPhone.setText("Số điện thoại *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblPhone, gridBagConstraints);
+
+        txtPhone.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(txtPhone, gridBagConstraints);
+
+        lblGuests.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblGuests.setForeground(new java.awt.Color(44, 62, 80));
+        lblGuests.setText("Số khách *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblGuests, gridBagConstraints);
+
+        spnGuests.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        spnGuests.setModel(new javax.swing.SpinnerNumberModel(2, 1, 99, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(spnGuests, gridBagConstraints);
+
+        lblDate.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblDate.setForeground(new java.awt.Color(44, 62, 80));
+        lblDate.setText("Ngày (dd/MM/yyyy) *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblDate, gridBagConstraints);
+
+        txtDate.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(txtDate, gridBagConstraints);
+
+        lblTime.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblTime.setForeground(new java.awt.Color(44, 62, 80));
+        lblTime.setText("Giờ đến *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblTime, gridBagConstraints);
+
+        cboTime.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        cboTime.setEditable(true);
+        cboTime.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(cboTime, gridBagConstraints);
+
+        lblArea.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblArea.setForeground(new java.awt.Color(44, 62, 80));
+        lblArea.setText("Khu vực mong muốn");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblArea, gridBagConstraints);
+
+        cboArea.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        cboArea.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bất kỳ" }));
+        cboArea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboAreaActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(cboArea, gridBagConstraints);
+
+        lblTable.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblTable.setForeground(new java.awt.Color(44, 62, 80));
+        lblTable.setText("Bàn");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblTable, gridBagConstraints);
+
+        cboTable.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        cboTable.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "(Chưa chọn bàn - xếp khi khách đến)" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(cboTable, gridBagConstraints);
+
+        lblDeposit.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblDeposit.setForeground(new java.awt.Color(44, 62, 80));
+        lblDeposit.setText("Tiền cọc (đ)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblDeposit, gridBagConstraints);
+
+        txtDeposit.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        txtDeposit.setText("0");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(txtDeposit, gridBagConstraints);
+
+        lblNote.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblNote.setForeground(new java.awt.Color(44, 62, 80));
+        lblNote.setText("Ghi chú");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 4, 5, 8);
+        pnlForm.add(lblNote, gridBagConstraints);
+
+        txtNote.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        txtNote.setColumns(20);
+        txtNote.setLineWrap(true);
+        txtNote.setRows(3);
+        txtNote.setWrapStyleWord(true);
+        scrollNote.setViewportView(txtNote);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
+        pnlForm.add(scrollNote, gridBagConstraints);
+
+        lblHint.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        lblHint.setForeground(new java.awt.Color(127, 140, 141));
+        lblHint.setText("Chỉ hiện các bàn đủ ghế cho số khách. Mỗi lượt đặt giữ bàn 2 giờ, hệ thống kiểm tra trùng giờ.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 4, 2, 4);
+        pnlForm.add(lblHint, gridBagConstraints);
+
+        lblError.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblError.setForeground(new java.awt.Color(231, 76, 60));
+        lblError.setText(" ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        pnlForm.add(lblError, gridBagConstraints);
+
+        getContentPane().add(pnlForm, java.awt.BorderLayout.CENTER);
+
+        pnlButtons.setBackground(new java.awt.Color(255, 255, 255));
+        pnlButtons.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 18, 14, 18));
+        pnlButtons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 0));
+
+        btnCancel.setBackground(new java.awt.Color(236, 240, 241));
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(44, 62, 80));
+        btnCancel.setText("Hủy");
+        btnCancel.setFocusable(false);
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+        pnlButtons.add(btnCancel);
+
+        btnSave.setBackground(new java.awt.Color(142, 68, 173));
+        btnSave.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnSave.setText("Lưu đặt bàn");
+        btnSave.setFocusable(false);
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+        pnlButtons.add(btnSave);
+
+        getContentPane().add(pnlButtons, java.awt.BorderLayout.SOUTH);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void cboAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboAreaActionPerformed
+        refreshTables();
+    }//GEN-LAST:event_cboAreaActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        dispose();
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        String dateText = txtDate.getText().trim();
+        String timeText = String.valueOf(cboTime.getSelectedItem()).trim();
+        String dateTime;
+        try {
+            SimpleDateFormat in = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            in.setLenient(false);
+            dateTime = new SimpleDateFormat(Reservation.DATE_TIME_FORMAT).format(in.parse(dateText + " " + timeText));
+        } catch (ParseException ex) {
+            lblError.setText("Ngày hoặc giờ không hợp lệ (ngày dd/MM/yyyy, giờ HH:mm).");
+            return;
+        }
+        String digits = txtDeposit.getText().replaceAll("[^0-9]", "");
+        long deposit = digits.isEmpty() ? 0 : Long.parseLong(digits.length() > 12 ? digits.substring(0, 12) : digits);
+        String table = cboTable.getSelectedIndex() > 0 ? tableIds.get(cboTable.getSelectedIndex() - 1) : "";
+        String area = "Bất kỳ".equals(cboArea.getSelectedItem()) ? "" : String.valueOf(cboArea.getSelectedItem());
+        lblError.setText(" ");
+        btnSave.setEnabled(false);
+        owner.send(NetworkPacket.buildSaveReservation(reservationId, txtName.getText().trim(), txtPhone.getText().trim(),
+                (Integer) spnGuests.getValue(), dateTime, table, area, deposit, txtNote.getText().trim()));
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JComboBox<String> cboArea;
+    private javax.swing.JComboBox<String> cboTable;
+    private javax.swing.JComboBox<String> cboTime;
+    private javax.swing.JLabel lblArea;
+    private javax.swing.JLabel lblDate;
+    private javax.swing.JLabel lblDeposit;
+    private javax.swing.JLabel lblError;
+    private javax.swing.JLabel lblGuests;
+    private javax.swing.JLabel lblHint;
+    private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblNote;
+    private javax.swing.JLabel lblPhone;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTable;
+    private javax.swing.JLabel lblTime;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnlButtons;
+    private javax.swing.JPanel pnlForm;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JScrollPane scrollNote;
+    private javax.swing.JSpinner spnGuests;
+    private javax.swing.JTextField txtDate;
+    private javax.swing.JTextField txtDeposit;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextArea txtNote;
+    private javax.swing.JTextField txtPhone;
+    // End of variables declaration//GEN-END:variables
+}
