@@ -138,7 +138,6 @@ public class TableManagementDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Quản lý bàn & khu vực");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16));
@@ -149,7 +148,6 @@ public class TableManagementDialog extends javax.swing.JDialog {
         lblTitle.setText("QUẢN LÝ BÀN & KHU VỰC");
         pnlHeader.add(lblTitle, java.awt.BorderLayout.WEST);
 
-        lblSummary.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblSummary.setForeground(new java.awt.Color(200, 206, 216));
         lblSummary.setText("-");
         pnlHeader.add(lblSummary, java.awt.BorderLayout.EAST);
@@ -402,28 +400,28 @@ public class TableManagementDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnClearActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblSummary;
-    private javax.swing.JPanel pnlBody;
-    private javax.swing.JScrollPane scrollTables;
-    private javax.swing.JTable tblTables;
-    private javax.swing.JPanel pnlEdit;
-    private javax.swing.JLabel lblTableId;
-    private javax.swing.JTextField txtTableId;
-    private javax.swing.JLabel lblTableName;
-    private javax.swing.JTextField txtTableName;
-    private javax.swing.JLabel lblCapacity;
-    private javax.swing.JSpinner spnCapacity;
-    private javax.swing.JLabel lblArea;
-    private javax.swing.JComboBox<String> cboArea;
-    private javax.swing.JLabel lblStatus;
-    private javax.swing.JComboBox<String> cboStatus;
-    private javax.swing.JLabel lblHint;
-    private javax.swing.JPanel pnlEditButtons;
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnUpdate;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> cboArea;
+    private javax.swing.JComboBox<String> cboStatus;
+    private javax.swing.JLabel lblArea;
+    private javax.swing.JLabel lblCapacity;
+    private javax.swing.JLabel lblHint;
+    private javax.swing.JLabel lblStatus;
+    private javax.swing.JLabel lblSummary;
+    private javax.swing.JLabel lblTableId;
+    private javax.swing.JLabel lblTableName;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlEdit;
+    private javax.swing.JPanel pnlEditButtons;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JScrollPane scrollTables;
+    private javax.swing.JSpinner spnCapacity;
+    private javax.swing.JTable tblTables;
+    private javax.swing.JTextField txtTableId;
+    private javax.swing.JTextField txtTableName;
     // End of variables declaration//GEN-END:variables
 }

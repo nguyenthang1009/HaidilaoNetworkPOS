@@ -190,7 +190,6 @@ public class CheckoutDialog extends javax.swing.JDialog implements MessageListen
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thanh toán");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(169, 29, 34));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 18, 12, 18));
@@ -201,7 +200,6 @@ public class CheckoutDialog extends javax.swing.JDialog implements MessageListen
         lblTitle.setText("THANH TOÁN");
         pnlHeader.add(lblTitle, java.awt.BorderLayout.NORTH);
 
-        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblSubtitle.setForeground(new java.awt.Color(245, 214, 214));
         lblSubtitle.setText("-");
         pnlHeader.add(lblSubtitle, java.awt.BorderLayout.CENTER);
@@ -274,7 +272,7 @@ public class CheckoutDialog extends javax.swing.JDialog implements MessageListen
         pnlDiscount.setLayout(new java.awt.BorderLayout(6, 0));
 
         txtDiscount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        txtDiscount.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        txtDiscount.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtDiscount.setText("0");
         pnlDiscount.add(txtDiscount, java.awt.BorderLayout.CENTER);
 
@@ -354,13 +352,11 @@ public class CheckoutDialog extends javax.swing.JDialog implements MessageListen
 
         rdoCash.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         rdoCash.setText("Tiền mặt");
-        rdoCash.setOpaque(false);
         rdoCash.setSelected(true);
         pnlMethods.add(rdoCash);
 
         rdoTransfer.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         rdoTransfer.setText("Chuyển khoản");
-        rdoTransfer.setOpaque(false);
         pnlMethods.add(rdoTransfer);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -382,7 +378,7 @@ public class CheckoutDialog extends javax.swing.JDialog implements MessageListen
         pnlPay.add(lblCashCaption, gridBagConstraints);
 
         txtCashGiven.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        txtCashGiven.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        txtCashGiven.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
@@ -413,7 +409,6 @@ public class CheckoutDialog extends javax.swing.JDialog implements MessageListen
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 4);
         pnlPay.add(lblChange, gridBagConstraints);
 
-        lblTransferInfo.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblTransferInfo.setForeground(new java.awt.Color(44, 62, 80));
         lblTransferInfo.setText(" ");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -494,35 +489,35 @@ public class CheckoutDialog extends javax.swing.JDialog implements MessageListen
     }//GEN-LAST:event_btnConfirmActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblSubtitle;
-    private javax.swing.JPanel pnlBody;
-    private javax.swing.JScrollPane scrollBill;
-    private javax.swing.JTable tblBill;
-    private javax.swing.JPanel pnlPay;
-    private javax.swing.JLabel lblSubtotalCaption;
-    private javax.swing.JLabel lblSubtotal;
-    private javax.swing.JLabel lblDiscountCaption;
-    private javax.swing.JPanel pnlDiscount;
-    private javax.swing.JTextField txtDiscount;
-    private javax.swing.JComboBox<String> cboDiscountType;
-    private javax.swing.JLabel lblDepositCaption;
-    private javax.swing.JLabel lblDeposit;
-    private javax.swing.JLabel lblDueCaption;
-    private javax.swing.JLabel lblDue;
-    private javax.swing.JLabel lblMethodCaption;
-    private javax.swing.JPanel pnlMethods;
-    private javax.swing.JRadioButton rdoCash;
-    private javax.swing.JRadioButton rdoTransfer;
-    private javax.swing.JLabel lblCashCaption;
-    private javax.swing.JTextField txtCashGiven;
-    private javax.swing.JLabel lblChangeCaption;
-    private javax.swing.JLabel lblChange;
-    private javax.swing.JLabel lblTransferInfo;
-    private javax.swing.JLabel lblError;
-    private javax.swing.JPanel pnlButtons;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnConfirm;
+    private javax.swing.JComboBox<String> cboDiscountType;
+    private javax.swing.JLabel lblCashCaption;
+    private javax.swing.JLabel lblChange;
+    private javax.swing.JLabel lblChangeCaption;
+    private javax.swing.JLabel lblDeposit;
+    private javax.swing.JLabel lblDepositCaption;
+    private javax.swing.JLabel lblDiscountCaption;
+    private javax.swing.JLabel lblDue;
+    private javax.swing.JLabel lblDueCaption;
+    private javax.swing.JLabel lblError;
+    private javax.swing.JLabel lblMethodCaption;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblSubtotal;
+    private javax.swing.JLabel lblSubtotalCaption;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblTransferInfo;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlButtons;
+    private javax.swing.JPanel pnlDiscount;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlMethods;
+    private javax.swing.JPanel pnlPay;
+    private javax.swing.JRadioButton rdoCash;
+    private javax.swing.JRadioButton rdoTransfer;
+    private javax.swing.JScrollPane scrollBill;
+    private javax.swing.JTable tblBill;
+    private javax.swing.JTextField txtCashGiven;
+    private javax.swing.JTextField txtDiscount;
     // End of variables declaration//GEN-END:variables
 }

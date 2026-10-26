@@ -255,6 +255,7 @@ public class ServerAdminFrame extends javax.swing.JFrame implements ServerEventL
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         pnlHeader = new javax.swing.JPanel();
         pnlHeaderLeft = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
@@ -303,21 +304,19 @@ public class ServerAdminFrame extends javax.swing.JFrame implements ServerEventL
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Máy chủ - Quản trị nhà hàng");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 16, 10, 16));
         pnlHeader.setLayout(new java.awt.BorderLayout(16, 0));
 
         pnlHeaderLeft.setOpaque(false);
-        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1));
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(241, 196, 15));
         lblTitle.setText("MÁY CHỦ · QUẢN TRỊ NHÀ HÀNG");
         pnlHeaderLeft.add(lblTitle);
 
-        lblManager.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblManager.setForeground(new java.awt.Color(200, 206, 216));
         lblManager.setText("Quản lý: -");
         pnlHeaderLeft.add(lblManager);
@@ -328,7 +327,7 @@ public class ServerAdminFrame extends javax.swing.JFrame implements ServerEventL
         pnlHeaderRight.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 4));
 
         pnlStatusLabels.setOpaque(false);
-        pnlStatusLabels.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlStatusLabels.setLayout(new java.awt.GridLayout(2, 1));
 
         lblSocketStatus.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblSocketStatus.setForeground(new java.awt.Color(231, 76, 60));
@@ -586,6 +585,7 @@ public class ServerAdminFrame extends javax.swing.JFrame implements ServerEventL
 
         splitDash.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         splitDash.setResizeWeight(0.45);
+
         pnlDevices.setBackground(new java.awt.Color(255, 255, 255));
         pnlDevices.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thiết bị đang kết nối", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12), new java.awt.Color(44, 62, 80))); // NOI18N
         pnlDevices.setLayout(new java.awt.BorderLayout());
@@ -632,7 +632,6 @@ public class ServerAdminFrame extends javax.swing.JFrame implements ServerEventL
 
         pnlDashboard.add(splitDash, java.awt.BorderLayout.CENTER);
 
-        lblServerAddress.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblServerAddress.setForeground(new java.awt.Color(127, 140, 141));
         lblServerAddress.setText("Địa chỉ máy chủ: -");
         pnlDashboard.add(lblServerAddress, java.awt.BorderLayout.SOUTH);
@@ -695,50 +694,50 @@ public class ServerAdminFrame extends javax.swing.JFrame implements ServerEventL
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChatHistory;
+    private javax.swing.JButton btnClearLog;
+    private javax.swing.JButton btnLockDevice;
+    private javax.swing.JButton btnManageCombos;
+    private javax.swing.JButton btnManageMenu;
+    private javax.swing.JButton btnManageStaff;
+    private javax.swing.JButton btnManageTables;
+    private javax.swing.JButton btnSettings;
+    private javax.swing.JButton btnStatistics;
+    private javax.swing.JButton btnToggleServer;
+    private javax.swing.JButton btnUnlockDevice;
+    private javax.swing.JLabel lblDbStatus;
+    private javax.swing.JLabel lblKpiDevices;
+    private javax.swing.JLabel lblKpiDevicesTitle;
+    private javax.swing.JLabel lblKpiOrders;
+    private javax.swing.JLabel lblKpiOrdersTitle;
+    private javax.swing.JLabel lblKpiRevenue;
+    private javax.swing.JLabel lblKpiRevenueTitle;
+    private javax.swing.JLabel lblKpiTables;
+    private javax.swing.JLabel lblKpiTablesTitle;
+    private javax.swing.JLabel lblManager;
+    private javax.swing.JLabel lblNavManage;
+    private javax.swing.JLabel lblNavSecurity;
+    private javax.swing.JLabel lblServerAddress;
+    private javax.swing.JLabel lblSocketStatus;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnlDashboard;
+    private javax.swing.JPanel pnlDevices;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JPanel pnlHeaderLeft;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblManager;
     private javax.swing.JPanel pnlHeaderRight;
-    private javax.swing.JPanel pnlStatusLabels;
-    private javax.swing.JLabel lblSocketStatus;
-    private javax.swing.JLabel lblDbStatus;
-    private javax.swing.JButton btnToggleServer;
+    private javax.swing.JPanel pnlKpiDevices;
+    private javax.swing.JPanel pnlKpiOrders;
+    private javax.swing.JPanel pnlKpiRevenue;
+    private javax.swing.JPanel pnlKpiTables;
+    private javax.swing.JPanel pnlKpis;
+    private javax.swing.JPanel pnlLog;
     private javax.swing.JPanel pnlNav;
     private javax.swing.JPanel pnlNavButtons;
-    private javax.swing.JLabel lblNavManage;
-    private javax.swing.JButton btnManageMenu;
-    private javax.swing.JButton btnManageCombos;
-    private javax.swing.JButton btnManageTables;
-    private javax.swing.JButton btnManageStaff;
-    private javax.swing.JButton btnStatistics;
-    private javax.swing.JButton btnChatHistory;
-    private javax.swing.JButton btnSettings;
-    private javax.swing.JLabel lblNavSecurity;
-    private javax.swing.JButton btnLockDevice;
-    private javax.swing.JButton btnUnlockDevice;
-    private javax.swing.JButton btnClearLog;
-    private javax.swing.JPanel pnlDashboard;
-    private javax.swing.JPanel pnlKpis;
-    private javax.swing.JPanel pnlKpiRevenue;
-    private javax.swing.JLabel lblKpiRevenueTitle;
-    private javax.swing.JLabel lblKpiRevenue;
-    private javax.swing.JPanel pnlKpiOrders;
-    private javax.swing.JLabel lblKpiOrdersTitle;
-    private javax.swing.JLabel lblKpiOrders;
-    private javax.swing.JPanel pnlKpiTables;
-    private javax.swing.JLabel lblKpiTablesTitle;
-    private javax.swing.JLabel lblKpiTables;
-    private javax.swing.JPanel pnlKpiDevices;
-    private javax.swing.JLabel lblKpiDevicesTitle;
-    private javax.swing.JLabel lblKpiDevices;
-    private javax.swing.JSplitPane splitDash;
-    private javax.swing.JPanel pnlDevices;
+    private javax.swing.JPanel pnlStatusLabels;
     private javax.swing.JScrollPane scrollDevices;
-    private javax.swing.JTable tblActiveDevices;
-    private javax.swing.JPanel pnlLog;
     private javax.swing.JScrollPane scrollLog;
+    private javax.swing.JSplitPane splitDash;
+    private javax.swing.JTable tblActiveDevices;
     private javax.swing.JTextArea txtLog;
-    private javax.swing.JLabel lblServerAddress;
     // End of variables declaration//GEN-END:variables
 }

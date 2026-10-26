@@ -149,7 +149,6 @@ public class StaffManagementDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Quản lý nhân viên");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16));
@@ -160,7 +159,6 @@ public class StaffManagementDialog extends javax.swing.JDialog {
         lblTitle.setText("QUẢN LÝ NHÂN VIÊN & TÀI KHOẢN");
         pnlHeader.add(lblTitle, java.awt.BorderLayout.WEST);
 
-        lblSummary.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblSummary.setForeground(new java.awt.Color(200, 206, 216));
         lblSummary.setText("-");
         pnlHeader.add(lblSummary, java.awt.BorderLayout.EAST);
@@ -326,7 +324,6 @@ public class StaffManagementDialog extends javax.swing.JDialog {
 
         chkActive.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         chkActive.setText("Đang làm việc");
-        chkActive.setOpaque(false);
         chkActive.setSelected(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -486,32 +483,32 @@ public class StaffManagementDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnClearActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> cboRole;
+    private javax.swing.JCheckBox chkActive;
+    private javax.swing.JLabel lblActive;
+    private javax.swing.JLabel lblFullName;
+    private javax.swing.JLabel lblHint;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblPhone;
+    private javax.swing.JLabel lblRole;
+    private javax.swing.JLabel lblStaffId;
     private javax.swing.JLabel lblSummary;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblUsername;
     private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlEdit;
+    private javax.swing.JPanel pnlEditButtons;
+    private javax.swing.JPanel pnlHeader;
     private javax.swing.JScrollPane scrollStaff;
     private javax.swing.JTable tblStaff;
-    private javax.swing.JPanel pnlEdit;
-    private javax.swing.JLabel lblStaffId;
-    private javax.swing.JTextField txtStaffId;
-    private javax.swing.JLabel lblUsername;
-    private javax.swing.JTextField txtUsername;
-    private javax.swing.JLabel lblPassword;
-    private javax.swing.JPasswordField txtPassword;
-    private javax.swing.JLabel lblFullName;
     private javax.swing.JTextField txtFullName;
-    private javax.swing.JLabel lblRole;
-    private javax.swing.JComboBox<String> cboRole;
-    private javax.swing.JLabel lblPhone;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtPhone;
-    private javax.swing.JLabel lblActive;
-    private javax.swing.JCheckBox chkActive;
-    private javax.swing.JLabel lblHint;
-    private javax.swing.JPanel pnlEditButtons;
-    private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnUpdate;
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnClear;
+    private javax.swing.JTextField txtStaffId;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

@@ -135,6 +135,7 @@ public class StatisticsDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         pnlHeader = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         pnlBody = new javax.swing.JPanel();
@@ -174,7 +175,6 @@ public class StatisticsDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thống kê doanh thu");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16));
@@ -203,7 +203,7 @@ public class StatisticsDialog extends javax.swing.JDialog {
         pnlFilter.add(lblFrom);
 
         txtFromDate.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        txtFromDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtFromDate.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtFromDate.setColumns(9);
         pnlFilter.add(txtFromDate);
 
@@ -213,7 +213,7 @@ public class StatisticsDialog extends javax.swing.JDialog {
         pnlFilter.add(lblTo);
 
         txtToDate.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        txtToDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtToDate.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtToDate.setColumns(9);
         pnlFilter.add(txtToDate);
 
@@ -324,11 +324,12 @@ public class StatisticsDialog extends javax.swing.JDialog {
         pnlBody.add(pnlTop, java.awt.BorderLayout.NORTH);
 
         tabStats.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+
         splitDaily.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         splitDaily.setResizeWeight(0.6);
+
         pnlChartHost.setBackground(new java.awt.Color(255, 255, 255));
         pnlChartHost.setLayout(new java.awt.BorderLayout());
-
         splitDaily.setTopComponent(pnlChartHost);
 
         tblDaily.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
@@ -441,41 +442,41 @@ public class StatisticsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnExportActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JPanel pnlBody;
-    private javax.swing.JPanel pnlTop;
-    private javax.swing.JPanel pnlFilter;
-    private javax.swing.JLabel lblFrom;
-    private javax.swing.JTextField txtFromDate;
-    private javax.swing.JLabel lblTo;
-    private javax.swing.JTextField txtToDate;
-    private javax.swing.JComboBox<String> cboQuickRange;
-    private javax.swing.JButton btnView;
     private javax.swing.JButton btnExport;
-    private javax.swing.JPanel pnlKpis;
-    private javax.swing.JPanel pnlRevenue;
-    private javax.swing.JLabel lblRevenueTitle;
-    private javax.swing.JLabel lblRevenue;
-    private javax.swing.JPanel pnlOrderCount;
-    private javax.swing.JLabel lblOrderCountTitle;
-    private javax.swing.JLabel lblOrderCount;
-    private javax.swing.JPanel pnlGuestCount;
-    private javax.swing.JLabel lblGuestCountTitle;
-    private javax.swing.JLabel lblGuestCount;
-    private javax.swing.JPanel pnlAvgOrder;
-    private javax.swing.JLabel lblAvgOrderTitle;
+    private javax.swing.JButton btnView;
+    private javax.swing.JComboBox<String> cboQuickRange;
     private javax.swing.JLabel lblAvgOrder;
-    private javax.swing.JTabbedPane tabStats;
-    private javax.swing.JSplitPane splitDaily;
+    private javax.swing.JLabel lblAvgOrderTitle;
+    private javax.swing.JLabel lblFrom;
+    private javax.swing.JLabel lblGuestCount;
+    private javax.swing.JLabel lblGuestCountTitle;
+    private javax.swing.JLabel lblOrderCount;
+    private javax.swing.JLabel lblOrderCountTitle;
+    private javax.swing.JLabel lblRevenue;
+    private javax.swing.JLabel lblRevenueTitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblTo;
+    private javax.swing.JPanel pnlAvgOrder;
+    private javax.swing.JPanel pnlBody;
     private javax.swing.JPanel pnlChartHost;
-    private javax.swing.JScrollPane scrollDaily;
-    private javax.swing.JTable tblDaily;
-    private javax.swing.JScrollPane scrollTopItems;
-    private javax.swing.JTable tblTopItems;
-    private javax.swing.JScrollPane scrollByTable;
-    private javax.swing.JTable tblByTable;
+    private javax.swing.JPanel pnlFilter;
+    private javax.swing.JPanel pnlGuestCount;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlKpis;
+    private javax.swing.JPanel pnlOrderCount;
+    private javax.swing.JPanel pnlRevenue;
+    private javax.swing.JPanel pnlTop;
     private javax.swing.JScrollPane scrollByStaff;
+    private javax.swing.JScrollPane scrollByTable;
+    private javax.swing.JScrollPane scrollDaily;
+    private javax.swing.JScrollPane scrollTopItems;
+    private javax.swing.JSplitPane splitDaily;
+    private javax.swing.JTabbedPane tabStats;
     private javax.swing.JTable tblByStaff;
+    private javax.swing.JTable tblByTable;
+    private javax.swing.JTable tblDaily;
+    private javax.swing.JTable tblTopItems;
+    private javax.swing.JTextField txtFromDate;
+    private javax.swing.JTextField txtToDate;
     // End of variables declaration//GEN-END:variables
 }

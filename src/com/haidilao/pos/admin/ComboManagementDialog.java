@@ -229,7 +229,6 @@ public class ComboManagementDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Quản lý combo");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16));
@@ -240,7 +239,6 @@ public class ComboManagementDialog extends javax.swing.JDialog {
         lblTitle.setText("QUẢN LÝ COMBO ƯU ĐÃI");
         pnlHeader.add(lblTitle, java.awt.BorderLayout.WEST);
 
-        lblImageHint.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblImageHint.setForeground(new java.awt.Color(200, 206, 216));
         lblImageHint.setText("Ảnh JPG / PNG được tự thu nhỏ để gửi nhanh tới Tablet");
         pnlHeader.add(lblImageHint, java.awt.BorderLayout.EAST);
@@ -250,6 +248,7 @@ public class ComboManagementDialog extends javax.swing.JDialog {
         splitCombo.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         splitCombo.setDividerLocation(430);
         splitCombo.setResizeWeight(0.4);
+
         pnlList.setBackground(new java.awt.Color(255, 255, 255));
         pnlList.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Danh sách combo", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12), new java.awt.Color(44, 62, 80))); // NOI18N
         pnlList.setLayout(new java.awt.BorderLayout());
@@ -403,7 +402,6 @@ public class ComboManagementDialog extends javax.swing.JDialog {
         pnlImageBox.add(lblImageTitle, java.awt.BorderLayout.NORTH);
 
         lblImagePreview.setBackground(new java.awt.Color(236, 240, 241));
-        lblImagePreview.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblImagePreview.setForeground(new java.awt.Color(127, 140, 141));
         lblImagePreview.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblImagePreview.setText("Chưa có ảnh");
@@ -476,7 +474,6 @@ public class ComboManagementDialog extends javax.swing.JDialog {
         pnlItemTools.setLayout(new java.awt.BorderLayout(6, 0));
 
         cboMenuItem.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        cboMenuItem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {  }));
         pnlItemTools.add(cboMenuItem, java.awt.BorderLayout.CENTER);
 
         pnlItemButtons.setOpaque(false);
@@ -645,48 +642,48 @@ public class ComboManagementDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnClearActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblImageHint;
-    private javax.swing.JSplitPane splitCombo;
-    private javax.swing.JPanel pnlList;
-    private javax.swing.JScrollPane scrollCombos;
-    private javax.swing.JTable tblCombos;
-    private javax.swing.JPanel pnlEdit;
-    private javax.swing.JPanel pnlTop;
-    private javax.swing.JPanel pnlFields;
-    private javax.swing.JLabel lblComboId;
-    private javax.swing.JTextField txtComboId;
-    private javax.swing.JLabel lblComboName;
-    private javax.swing.JTextField txtComboName;
-    private javax.swing.JLabel lblComboPrice;
-    private javax.swing.JTextField txtComboPrice;
-    private javax.swing.JLabel lblComboStatus;
-    private javax.swing.JComboBox<String> cboComboStatus;
-    private javax.swing.JLabel lblComboDesc;
-    private javax.swing.JScrollPane scrollComboDesc;
-    private javax.swing.JTextArea txtComboDesc;
-    private javax.swing.JPanel pnlImageBox;
-    private javax.swing.JLabel lblImageTitle;
-    private javax.swing.JLabel lblImagePreview;
-    private javax.swing.JPanel pnlImageButtons;
-    private javax.swing.JButton btnChooseImage;
-    private javax.swing.JButton btnRemoveImage;
-    private javax.swing.JPanel pnlItems;
-    private javax.swing.JScrollPane scrollComboItems;
-    private javax.swing.JTable tblComboItems;
-    private javax.swing.JPanel pnlItemTools;
-    private javax.swing.JComboBox<String> cboMenuItem;
-    private javax.swing.JPanel pnlItemButtons;
-    private javax.swing.JSpinner spnQuantity;
-    private javax.swing.JButton btnAddItem;
-    private javax.swing.JButton btnRemoveItem;
-    private javax.swing.JPanel pnlBottom;
-    private javax.swing.JLabel lblComboValue;
-    private javax.swing.JPanel pnlEditButtons;
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnUpdate;
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnAddItem;
+    private javax.swing.JButton btnChooseImage;
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnRemoveImage;
+    private javax.swing.JButton btnRemoveItem;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> cboComboStatus;
+    private javax.swing.JComboBox<String> cboMenuItem;
+    private javax.swing.JLabel lblComboDesc;
+    private javax.swing.JLabel lblComboId;
+    private javax.swing.JLabel lblComboName;
+    private javax.swing.JLabel lblComboPrice;
+    private javax.swing.JLabel lblComboStatus;
+    private javax.swing.JLabel lblComboValue;
+    private javax.swing.JLabel lblImageHint;
+    private javax.swing.JLabel lblImagePreview;
+    private javax.swing.JLabel lblImageTitle;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnlBottom;
+    private javax.swing.JPanel pnlEdit;
+    private javax.swing.JPanel pnlEditButtons;
+    private javax.swing.JPanel pnlFields;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlImageBox;
+    private javax.swing.JPanel pnlImageButtons;
+    private javax.swing.JPanel pnlItemButtons;
+    private javax.swing.JPanel pnlItemTools;
+    private javax.swing.JPanel pnlItems;
+    private javax.swing.JPanel pnlList;
+    private javax.swing.JPanel pnlTop;
+    private javax.swing.JScrollPane scrollComboDesc;
+    private javax.swing.JScrollPane scrollComboItems;
+    private javax.swing.JScrollPane scrollCombos;
+    private javax.swing.JSplitPane splitCombo;
+    private javax.swing.JSpinner spnQuantity;
+    private javax.swing.JTable tblComboItems;
+    private javax.swing.JTable tblCombos;
+    private javax.swing.JTextArea txtComboDesc;
+    private javax.swing.JTextField txtComboId;
+    private javax.swing.JTextField txtComboName;
+    private javax.swing.JTextField txtComboPrice;
     // End of variables declaration//GEN-END:variables
 }

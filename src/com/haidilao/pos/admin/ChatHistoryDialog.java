@@ -141,6 +141,7 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         pnlHeader = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         lblSubtitle = new javax.swing.JLabel();
@@ -166,7 +167,6 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Lịch sử tin nhắn");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16));
@@ -177,7 +177,6 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
         lblTitle.setText("LỊCH SỬ TIN NHẮN");
         pnlHeader.add(lblTitle, java.awt.BorderLayout.WEST);
 
-        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblSubtitle.setForeground(new java.awt.Color(200, 206, 216));
         lblSubtitle.setText("Tra cứu hội thoại giữa khách và nhân viên khi có thắc mắc / khiếu nại");
         pnlHeader.add(lblSubtitle, java.awt.BorderLayout.EAST);
@@ -197,7 +196,7 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
         pnlFilter.add(lblFrom);
 
         txtFromDate.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        txtFromDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtFromDate.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtFromDate.setColumns(9);
         pnlFilter.add(txtFromDate);
 
@@ -207,7 +206,7 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
         pnlFilter.add(lblTo);
 
         txtToDate.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        txtToDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtToDate.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtToDate.setColumns(9);
         pnlFilter.add(txtToDate);
 
@@ -262,6 +261,7 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
 
         splitLog.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         splitLog.setResizeWeight(0.78);
+
         tblLogs.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         tblLogs.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -302,7 +302,6 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
 
         pnlBody.add(splitLog, java.awt.BorderLayout.CENTER);
 
-        lblCount.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblCount.setForeground(new java.awt.Color(127, 140, 141));
         lblCount.setText(" ");
         pnlBody.add(lblCount, java.awt.BorderLayout.SOUTH);
@@ -325,27 +324,27 @@ public class ChatHistoryDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnExportActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblSubtitle;
-    private javax.swing.JPanel pnlBody;
-    private javax.swing.JPanel pnlFilter;
-    private javax.swing.JLabel lblFrom;
-    private javax.swing.JTextField txtFromDate;
-    private javax.swing.JLabel lblTo;
-    private javax.swing.JTextField txtToDate;
-    private javax.swing.JLabel lblTable;
-    private javax.swing.JComboBox<String> cboTable;
-    private javax.swing.JLabel lblKeyword;
-    private javax.swing.JTextField txtKeyword;
-    private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnExport;
-    private javax.swing.JSplitPane splitLog;
-    private javax.swing.JScrollPane scrollLogs;
-    private javax.swing.JTable tblLogs;
-    private javax.swing.JPanel pnlDetail;
-    private javax.swing.JScrollPane scrollDetail;
-    private javax.swing.JTextArea txtDetail;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JComboBox<String> cboTable;
     private javax.swing.JLabel lblCount;
+    private javax.swing.JLabel lblFrom;
+    private javax.swing.JLabel lblKeyword;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblTable;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblTo;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlDetail;
+    private javax.swing.JPanel pnlFilter;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JScrollPane scrollDetail;
+    private javax.swing.JScrollPane scrollLogs;
+    private javax.swing.JSplitPane splitLog;
+    private javax.swing.JTable tblLogs;
+    private javax.swing.JTextArea txtDetail;
+    private javax.swing.JTextField txtFromDate;
+    private javax.swing.JTextField txtKeyword;
+    private javax.swing.JTextField txtToDate;
     // End of variables declaration//GEN-END:variables
 }

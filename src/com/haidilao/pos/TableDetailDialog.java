@@ -271,21 +271,19 @@ public class TableDetailDialog extends javax.swing.JDialog implements MessageLis
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Chi tiết bàn");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(169, 29, 34));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 16, 10, 16));
         pnlHeader.setLayout(new java.awt.BorderLayout(12, 0));
 
         pnlHeaderLeft.setOpaque(false);
-        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1));
 
         lblTableTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTableTitle.setForeground(new java.awt.Color(255, 255, 255));
         lblTableTitle.setText("BÀN");
         pnlHeaderLeft.add(lblTableTitle);
 
-        lblTableSub.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblTableSub.setForeground(new java.awt.Color(245, 214, 214));
         lblTableSub.setText("-");
         pnlHeaderLeft.add(lblTableSub);
@@ -301,6 +299,7 @@ public class TableDetailDialog extends javax.swing.JDialog implements MessageLis
 
         splitDetail.setDividerLocation(380);
         splitDetail.setResizeWeight(0.38);
+
         pnlLeft.setBackground(new java.awt.Color(244, 245, 247));
         pnlLeft.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 5));
         pnlLeft.setLayout(new java.awt.BorderLayout(0, 10));
@@ -555,6 +554,7 @@ public class TableDetailDialog extends javax.swing.JDialog implements MessageLis
         splitRight.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 5, 10, 10));
         splitRight.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         splitRight.setResizeWeight(0.55);
+
         pnlTableOrders.setBackground(new java.awt.Color(255, 255, 255));
         pnlTableOrders.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Các đơn của bàn", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12), new java.awt.Color(44, 62, 80))); // NOI18N
         pnlTableOrders.setLayout(new java.awt.BorderLayout(0, 6));
@@ -618,7 +618,6 @@ public class TableDetailDialog extends javax.swing.JDialog implements MessageLis
 
         pnlChatHost.setBackground(new java.awt.Color(255, 255, 255));
         pnlChatHost.setLayout(new java.awt.BorderLayout());
-
         pnlTableChat.add(pnlChatHost, java.awt.BorderLayout.CENTER);
 
         pnlChatInput.setOpaque(false);
@@ -706,48 +705,48 @@ public class TableDetailDialog extends javax.swing.JDialog implements MessageLis
     }//GEN-LAST:event_btnSendActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JPanel pnlHeaderLeft;
-    private javax.swing.JLabel lblTableTitle;
-    private javax.swing.JLabel lblTableSub;
-    private javax.swing.JLabel lblTableStatus;
-    private javax.swing.JSplitPane splitDetail;
-    private javax.swing.JPanel pnlLeft;
-    private javax.swing.JPanel pnlCustomer;
-    private javax.swing.JLabel lblCustomerName;
-    private javax.swing.JTextField txtCustomerName;
-    private javax.swing.JLabel lblCustomerPhone;
-    private javax.swing.JTextField txtCustomerPhone;
-    private javax.swing.JLabel lblGuestCount;
-    private javax.swing.JSpinner spnGuestCount;
-    private javax.swing.JLabel lblWaiter;
-    private javax.swing.JComboBox<String> cboWaiter;
-    private javax.swing.JLabel lblSessionNote;
-    private javax.swing.JScrollPane scrollSessionNote;
-    private javax.swing.JTextArea txtSessionNote;
-    private javax.swing.JLabel lblOpened;
-    private javax.swing.JLabel lblOpenedValue;
-    private javax.swing.JLabel lblDeposit;
-    private javax.swing.JLabel lblDepositValue;
-    private javax.swing.JLabel lblSubtotal;
-    private javax.swing.JLabel lblSubtotalValue;
-    private javax.swing.JButton btnSaveInfo;
-    private javax.swing.JPanel pnlActions;
-    private javax.swing.JButton btnCheckout;
-    private javax.swing.JButton btnMoveTable;
     private javax.swing.JButton btnCancelTable;
+    private javax.swing.JButton btnCheckout;
     private javax.swing.JButton btnCleaned;
-    private javax.swing.JSplitPane splitRight;
-    private javax.swing.JPanel pnlTableOrders;
-    private javax.swing.JScrollPane scrollTableOrders;
-    private javax.swing.JTable tblTableOrders;
-    private javax.swing.JPanel pnlOrderButtons;
+    private javax.swing.JButton btnMoveTable;
     private javax.swing.JButton btnOrderCancel;
     private javax.swing.JButton btnOrderServed;
-    private javax.swing.JPanel pnlTableChat;
+    private javax.swing.JButton btnSaveInfo;
+    private javax.swing.JButton btnSend;
+    private javax.swing.JComboBox<String> cboWaiter;
+    private javax.swing.JLabel lblCustomerName;
+    private javax.swing.JLabel lblCustomerPhone;
+    private javax.swing.JLabel lblDeposit;
+    private javax.swing.JLabel lblDepositValue;
+    private javax.swing.JLabel lblGuestCount;
+    private javax.swing.JLabel lblOpened;
+    private javax.swing.JLabel lblOpenedValue;
+    private javax.swing.JLabel lblSessionNote;
+    private javax.swing.JLabel lblSubtotal;
+    private javax.swing.JLabel lblSubtotalValue;
+    private javax.swing.JLabel lblTableStatus;
+    private javax.swing.JLabel lblTableSub;
+    private javax.swing.JLabel lblTableTitle;
+    private javax.swing.JLabel lblWaiter;
+    private javax.swing.JPanel pnlActions;
     private javax.swing.JPanel pnlChatHost;
     private javax.swing.JPanel pnlChatInput;
+    private javax.swing.JPanel pnlCustomer;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlHeaderLeft;
+    private javax.swing.JPanel pnlLeft;
+    private javax.swing.JPanel pnlOrderButtons;
+    private javax.swing.JPanel pnlTableChat;
+    private javax.swing.JPanel pnlTableOrders;
+    private javax.swing.JScrollPane scrollSessionNote;
+    private javax.swing.JScrollPane scrollTableOrders;
+    private javax.swing.JSplitPane splitDetail;
+    private javax.swing.JSplitPane splitRight;
+    private javax.swing.JSpinner spnGuestCount;
+    private javax.swing.JTable tblTableOrders;
+    private javax.swing.JTextField txtCustomerName;
+    private javax.swing.JTextField txtCustomerPhone;
     private javax.swing.JTextField txtMessage;
-    private javax.swing.JButton btnSend;
+    private javax.swing.JTextArea txtSessionNote;
     // End of variables declaration//GEN-END:variables
 }

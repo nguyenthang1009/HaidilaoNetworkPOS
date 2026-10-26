@@ -54,7 +54,6 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cài đặt nhà hàng");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(12, 16, 12, 16));
@@ -218,20 +217,20 @@ public class SettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JPanel pnlForm;
-    private javax.swing.JLabel lblRestaurantName;
-    private javax.swing.JTextField txtRestaurantName;
-    private javax.swing.JLabel lblBankName;
-    private javax.swing.JTextField txtBankName;
-    private javax.swing.JLabel lblBankAccount;
-    private javax.swing.JTextField txtBankAccount;
-    private javax.swing.JLabel lblBankOwner;
-    private javax.swing.JTextField txtBankOwner;
-    private javax.swing.JLabel lblHint;
-    private javax.swing.JPanel pnlButtons;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnSave;
+    private javax.swing.JLabel lblBankAccount;
+    private javax.swing.JLabel lblBankName;
+    private javax.swing.JLabel lblBankOwner;
+    private javax.swing.JLabel lblHint;
+    private javax.swing.JLabel lblRestaurantName;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnlButtons;
+    private javax.swing.JPanel pnlForm;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JTextField txtBankAccount;
+    private javax.swing.JTextField txtBankName;
+    private javax.swing.JTextField txtBankOwner;
+    private javax.swing.JTextField txtRestaurantName;
     // End of variables declaration//GEN-END:variables
 }

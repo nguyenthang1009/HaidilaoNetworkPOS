@@ -138,7 +138,6 @@ public class PaymentDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thanh toán");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(169, 29, 34));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 20, 14, 20));
@@ -149,7 +148,6 @@ public class PaymentDialog extends javax.swing.JDialog {
         lblTitle.setText("THANH TOÁN");
         pnlHeader.add(lblTitle, java.awt.BorderLayout.NORTH);
 
-        lblSubtitle.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblSubtitle.setForeground(new java.awt.Color(255, 255, 255));
         lblSubtitle.setText("Hóa đơn tạm tính");
         pnlHeader.add(lblSubtitle, java.awt.BorderLayout.CENTER);
@@ -260,7 +258,6 @@ public class PaymentDialog extends javax.swing.JDialog {
 
         rdoCash.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         rdoCash.setText("Tiền mặt");
-        rdoCash.setOpaque(false);
         rdoCash.setSelected(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -272,7 +269,6 @@ public class PaymentDialog extends javax.swing.JDialog {
 
         rdoTransfer.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         rdoTransfer.setText("Chuyển khoản ngân hàng");
-        rdoTransfer.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -285,7 +281,6 @@ public class PaymentDialog extends javax.swing.JDialog {
         pnlTransfer.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10));
         pnlTransfer.setLayout(new java.awt.GridBagLayout());
 
-        lblBank.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblBank.setForeground(new java.awt.Color(44, 62, 80));
         lblBank.setText("-");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -398,31 +393,31 @@ public class PaymentDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnRequestActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblSubtitle;
-    private javax.swing.JPanel pnlBody;
-    private javax.swing.JScrollPane scrollBill;
-    private javax.swing.JTable tblBill;
-    private javax.swing.JPanel pnlSide;
-    private javax.swing.JPanel pnlSummary;
-    private javax.swing.JLabel lblSubtotalCaption;
-    private javax.swing.JLabel lblSubtotal;
-    private javax.swing.JLabel lblDepositCaption;
-    private javax.swing.JLabel lblDeposit;
-    private javax.swing.JLabel lblDueCaption;
-    private javax.swing.JLabel lblDue;
-    private javax.swing.JPanel pnlMethod;
-    private javax.swing.JRadioButton rdoCash;
-    private javax.swing.JRadioButton rdoTransfer;
-    private javax.swing.JPanel pnlTransfer;
-    private javax.swing.JLabel lblBank;
-    private javax.swing.JLabel lblAccount;
-    private javax.swing.JLabel lblOwner;
-    private javax.swing.JLabel lblContent;
-    private javax.swing.JLabel lblPayStatus;
-    private javax.swing.JPanel pnlButtons;
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRequest;
+    private javax.swing.JLabel lblAccount;
+    private javax.swing.JLabel lblBank;
+    private javax.swing.JLabel lblContent;
+    private javax.swing.JLabel lblDeposit;
+    private javax.swing.JLabel lblDepositCaption;
+    private javax.swing.JLabel lblDue;
+    private javax.swing.JLabel lblDueCaption;
+    private javax.swing.JLabel lblOwner;
+    private javax.swing.JLabel lblPayStatus;
+    private javax.swing.JLabel lblSubtitle;
+    private javax.swing.JLabel lblSubtotal;
+    private javax.swing.JLabel lblSubtotalCaption;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnlBody;
+    private javax.swing.JPanel pnlButtons;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlMethod;
+    private javax.swing.JPanel pnlSide;
+    private javax.swing.JPanel pnlSummary;
+    private javax.swing.JPanel pnlTransfer;
+    private javax.swing.JRadioButton rdoCash;
+    private javax.swing.JRadioButton rdoTransfer;
+    private javax.swing.JScrollPane scrollBill;
+    private javax.swing.JTable tblBill;
     // End of variables declaration//GEN-END:variables
 }

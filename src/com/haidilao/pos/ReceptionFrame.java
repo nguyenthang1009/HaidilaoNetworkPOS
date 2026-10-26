@@ -937,6 +937,7 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         pnlHeader = new javax.swing.JPanel();
         pnlHeaderLeft = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
@@ -1008,21 +1009,19 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Quầy Lễ tân");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 16, 10, 16));
         pnlHeader.setLayout(new java.awt.BorderLayout(16, 0));
 
         pnlHeaderLeft.setOpaque(false);
-        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1));
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(255, 255, 255));
         lblTitle.setText("QUẦY LỄ TÂN");
         pnlHeaderLeft.add(lblTitle);
 
-        lblStaff.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblStaff.setForeground(new java.awt.Color(200, 206, 216));
         lblStaff.setText("Nhân viên: -");
         pnlHeaderLeft.add(lblStaff);
@@ -1075,7 +1074,7 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
         pnlHeader.add(pnlStats, java.awt.BorderLayout.CENTER);
 
         pnlHeaderRight.setOpaque(false);
-        pnlHeaderRight.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlHeaderRight.setLayout(new java.awt.GridLayout(2, 1));
 
         lblConnection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblConnection.setForeground(new java.awt.Color(241, 196, 15));
@@ -1083,7 +1082,6 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
         lblConnection.setText("● Đang tìm máy chủ...");
         pnlHeaderRight.add(lblConnection);
 
-        lblClock.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblClock.setForeground(new java.awt.Color(200, 206, 216));
         lblClock.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblClock.setText("--:--");
@@ -1095,6 +1093,7 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
 
         splitMain.setDividerLocation(640);
         splitMain.setResizeWeight(0.5);
+
         pnlMap.setBackground(new java.awt.Color(244, 245, 247));
         pnlMap.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 4));
         pnlMap.setLayout(new java.awt.BorderLayout(0, 8));
@@ -1157,7 +1156,6 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
         pnlTableMap.setBackground(new java.awt.Color(244, 245, 247));
         pnlTableMap.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
         pnlTableMap.setLayout(new java.awt.GridLayout(0, 3, 10, 10));
-
         scrollMap.setViewportView(pnlTableMap);
 
         pnlMap.add(scrollMap, java.awt.BorderLayout.CENTER);
@@ -1174,6 +1172,7 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
         pnlRight.setLayout(new java.awt.BorderLayout());
 
         tabRight.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+
         pnlOrders.setBackground(new java.awt.Color(255, 255, 255));
         pnlOrders.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
         pnlOrders.setLayout(new java.awt.BorderLayout(0, 8));
@@ -1301,7 +1300,7 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
         pnlResTools.add(btnResPrev);
 
         txtResDate.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        txtResDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtResDate.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtResDate.setColumns(8);
         txtResDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1427,6 +1426,7 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
 
         splitMessages.setDividerLocation(200);
         splitMessages.setResizeWeight(0.3);
+
         pnlConvList.setBackground(new java.awt.Color(255, 255, 255));
         pnlConvList.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 4));
         pnlConvList.setLayout(new java.awt.BorderLayout(0, 6));
@@ -1485,7 +1485,6 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
 
         pnlChatHost.setBackground(new java.awt.Color(255, 255, 255));
         pnlChatHost.setLayout(new java.awt.BorderLayout());
-
         pnlMessages.add(pnlChatHost, java.awt.BorderLayout.CENTER);
 
         pnlReply.setOpaque(false);
@@ -1635,73 +1634,73 @@ public class ReceptionFrame extends javax.swing.JFrame implements ClientEventLis
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelOrder;
+    private javax.swing.JButton btnCancelReservation;
+    private javax.swing.JButton btnCheckIn;
+    private javax.swing.JButton btnEditReservation;
+    private javax.swing.JButton btnNewReservation;
+    private javax.swing.JButton btnNewReservationTop;
+    private javax.swing.JButton btnNoShow;
+    private javax.swing.JButton btnOpenOrderTable;
+    private javax.swing.JButton btnRefreshTables;
+    private javax.swing.JButton btnResNext;
+    private javax.swing.JButton btnResPrev;
+    private javax.swing.JButton btnResToday;
+    private javax.swing.JButton btnSendReply;
+    private javax.swing.JButton btnServed;
+    private javax.swing.JButton btnWalkIn;
+    private javax.swing.JComboBox<String> cboArea;
+    private javax.swing.JComboBox<String> cboChatScope;
+    private javax.swing.JComboBox<String> cboStatusFilter;
+    private javax.swing.JComboBox<String> cboTableFilter;
+    private javax.swing.JLabel lblArea;
+    private javax.swing.JLabel lblClock;
+    private javax.swing.JLabel lblConnection;
+    private javax.swing.JLabel lblConvHint;
+    private javax.swing.JLabel lblConvTitle;
+    private javax.swing.JLabel lblLegend;
+    private javax.swing.JLabel lblResDate;
+    private javax.swing.JLabel lblStaff;
+    private javax.swing.JLabel lblStatCleaning;
+    private javax.swing.JLabel lblStatFreeSeats;
+    private javax.swing.JLabel lblStatFreeTables;
+    private javax.swing.JLabel lblStatGuests;
+    private javax.swing.JLabel lblStatReservations;
+    private javax.swing.JLabel lblStatusFilter;
+    private javax.swing.JLabel lblTableFilter;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblToast;
+    private javax.swing.JPanel pnlChatHost;
+    private javax.swing.JPanel pnlConvHeader;
+    private javax.swing.JPanel pnlConvList;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JPanel pnlHeaderLeft;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblStaff;
-    private javax.swing.JPanel pnlStats;
-    private javax.swing.JLabel lblStatFreeTables;
-    private javax.swing.JLabel lblStatFreeSeats;
-    private javax.swing.JLabel lblStatGuests;
-    private javax.swing.JLabel lblStatCleaning;
-    private javax.swing.JLabel lblStatReservations;
     private javax.swing.JPanel pnlHeaderRight;
-    private javax.swing.JLabel lblConnection;
-    private javax.swing.JLabel lblClock;
-    private javax.swing.JSplitPane splitMain;
     private javax.swing.JPanel pnlMap;
     private javax.swing.JPanel pnlMapTools;
-    private javax.swing.JLabel lblArea;
-    private javax.swing.JComboBox<String> cboArea;
-    private javax.swing.JButton btnWalkIn;
-    private javax.swing.JButton btnNewReservationTop;
-    private javax.swing.JButton btnRefreshTables;
-    private javax.swing.JScrollPane scrollMap;
-    private javax.swing.JPanel pnlTableMap;
-    private javax.swing.JLabel lblLegend;
-    private javax.swing.JPanel pnlRight;
-    private javax.swing.JTabbedPane tabRight;
-    private javax.swing.JPanel pnlOrders;
-    private javax.swing.JPanel pnlOrderFilter;
-    private javax.swing.JLabel lblTableFilter;
-    private javax.swing.JComboBox<String> cboTableFilter;
-    private javax.swing.JLabel lblStatusFilter;
-    private javax.swing.JComboBox<String> cboStatusFilter;
-    private javax.swing.JScrollPane scrollOrders;
-    private javax.swing.JTable tblOrders;
-    private javax.swing.JPanel pnlOrderActions;
-    private javax.swing.JButton btnOpenOrderTable;
-    private javax.swing.JButton btnCancelOrder;
-    private javax.swing.JButton btnServed;
-    private javax.swing.JPanel pnlReservations;
-    private javax.swing.JPanel pnlResTools;
-    private javax.swing.JLabel lblResDate;
-    private javax.swing.JButton btnResPrev;
-    private javax.swing.JTextField txtResDate;
-    private javax.swing.JButton btnResNext;
-    private javax.swing.JButton btnResToday;
-    private javax.swing.JButton btnNewReservation;
-    private javax.swing.JScrollPane scrollReservations;
-    private javax.swing.JTable tblReservations;
-    private javax.swing.JPanel pnlResActions;
-    private javax.swing.JButton btnEditReservation;
-    private javax.swing.JButton btnCancelReservation;
-    private javax.swing.JButton btnNoShow;
-    private javax.swing.JButton btnCheckIn;
-    private javax.swing.JSplitPane splitMessages;
-    private javax.swing.JPanel pnlConvList;
-    private javax.swing.JLabel lblConvHint;
-    private javax.swing.JScrollPane scrollConversations;
-    private javax.swing.JTable tblConversations;
     private javax.swing.JPanel pnlMessages;
-    private javax.swing.JPanel pnlConvHeader;
-    private javax.swing.JLabel lblConvTitle;
-    private javax.swing.JComboBox<String> cboChatScope;
-    private javax.swing.JPanel pnlChatHost;
+    private javax.swing.JPanel pnlOrderActions;
+    private javax.swing.JPanel pnlOrderFilter;
+    private javax.swing.JPanel pnlOrders;
     private javax.swing.JPanel pnlReply;
-    private javax.swing.JTextField txtReply;
-    private javax.swing.JButton btnSendReply;
+    private javax.swing.JPanel pnlResActions;
+    private javax.swing.JPanel pnlResTools;
+    private javax.swing.JPanel pnlReservations;
+    private javax.swing.JPanel pnlRight;
+    private javax.swing.JPanel pnlStats;
     private javax.swing.JPanel pnlStatusBar;
-    private javax.swing.JLabel lblToast;
+    private javax.swing.JPanel pnlTableMap;
+    private javax.swing.JScrollPane scrollConversations;
+    private javax.swing.JScrollPane scrollMap;
+    private javax.swing.JScrollPane scrollOrders;
+    private javax.swing.JScrollPane scrollReservations;
+    private javax.swing.JSplitPane splitMain;
+    private javax.swing.JSplitPane splitMessages;
+    private javax.swing.JTabbedPane tabRight;
+    private javax.swing.JTable tblConversations;
+    private javax.swing.JTable tblOrders;
+    private javax.swing.JTable tblReservations;
+    private javax.swing.JTextField txtReply;
+    private javax.swing.JTextField txtResDate;
     // End of variables declaration//GEN-END:variables
 }

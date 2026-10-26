@@ -681,21 +681,19 @@ public class TabletClientFrame extends javax.swing.JFrame implements ClientEvent
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gọi món tại bàn");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(169, 29, 34));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 16, 10, 16));
         pnlHeader.setLayout(new java.awt.BorderLayout(12, 0));
 
         pnlHeaderLeft.setOpaque(false);
-        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1));
 
         lblTableName.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         lblTableName.setForeground(new java.awt.Color(255, 255, 255));
         lblTableName.setText("BÀN");
         pnlHeaderLeft.add(lblTableName);
 
-        lblGreeting.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblGreeting.setForeground(new java.awt.Color(245, 214, 214));
         lblGreeting.setText("Chào mừng quý khách!");
         pnlHeaderLeft.add(lblGreeting);
@@ -722,7 +720,6 @@ public class TabletClientFrame extends javax.swing.JFrame implements ClientEvent
         });
         pnlHeaderRight.add(btnCallStaff);
 
-        btnPayBill.setBackground(new java.awt.Color(255, 255, 255));
         btnPayBill.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPayBill.setForeground(new java.awt.Color(169, 29, 34));
         btnPayBill.setText("Thanh toán");
@@ -741,20 +738,20 @@ public class TabletClientFrame extends javax.swing.JFrame implements ClientEvent
         splitMain.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         splitMain.setDividerLocation(760);
         splitMain.setResizeWeight(0.62);
+
         pnlMenu.setBackground(new java.awt.Color(244, 245, 247));
         pnlMenu.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 4));
         pnlMenu.setLayout(new java.awt.BorderLayout(0, 6));
 
-        lblMenuHint.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblMenuHint.setForeground(new java.awt.Color(127, 140, 141));
         lblMenuHint.setText("Chọn món hoặc combo, bấm \"+ Thêm\" để cho vào giỏ hàng");
         pnlMenu.add(lblMenuHint, java.awt.BorderLayout.NORTH);
 
         tabMenu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+
         pnlCombo.setBackground(new java.awt.Color(244, 245, 247));
         pnlCombo.setBorder(javax.swing.BorderFactory.createEmptyBorder(6, 6, 6, 6));
         pnlCombo.setLayout(new java.awt.GridLayout(0, 2, 12, 12));
-
         scrollCombo.setViewportView(pnlCombo);
 
         tabMenu.addTab("Combo ưu đãi", scrollCombo);
@@ -768,6 +765,7 @@ public class TabletClientFrame extends javax.swing.JFrame implements ClientEvent
         pnlRight.setLayout(new java.awt.BorderLayout());
 
         tabRight.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+
         pnlCart.setBackground(new java.awt.Color(255, 255, 255));
         pnlCart.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         pnlCart.setLayout(new java.awt.BorderLayout(0, 8));
@@ -967,7 +965,6 @@ public class TabletClientFrame extends javax.swing.JFrame implements ClientEvent
 
         pnlChatHost.setBackground(new java.awt.Color(255, 255, 255));
         pnlChatHost.setLayout(new java.awt.BorderLayout());
-
         pnlChat.add(pnlChatHost, java.awt.BorderLayout.CENTER);
 
         pnlChatInput.setOpaque(false);
@@ -1012,7 +1009,6 @@ public class TabletClientFrame extends javax.swing.JFrame implements ClientEvent
         lblToast.setText(" ");
         pnlStatusBar.add(lblToast, java.awt.BorderLayout.CENTER);
 
-        lblClock.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblClock.setForeground(new java.awt.Color(127, 140, 141));
         lblClock.setText("--:--");
         pnlStatusBar.add(lblClock, java.awt.BorderLayout.EAST);
@@ -1083,51 +1079,51 @@ public class TabletClientFrame extends javax.swing.JFrame implements ClientEvent
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JPanel pnlHeaderLeft;
-    private javax.swing.JLabel lblTableName;
-    private javax.swing.JLabel lblGreeting;
-    private javax.swing.JPanel pnlHeaderRight;
-    private javax.swing.JLabel lblConnection;
     private javax.swing.JButton btnCallStaff;
-    private javax.swing.JButton btnPayBill;
-    private javax.swing.JSplitPane splitMain;
-    private javax.swing.JPanel pnlMenu;
-    private javax.swing.JLabel lblMenuHint;
-    private javax.swing.JTabbedPane tabMenu;
-    private javax.swing.JScrollPane scrollCombo;
-    private javax.swing.JPanel pnlCombo;
-    private javax.swing.JPanel pnlRight;
-    private javax.swing.JTabbedPane tabRight;
-    private javax.swing.JPanel pnlCart;
-    private javax.swing.JPanel pnlCartActions;
+    private javax.swing.JButton btnClearCart;
     private javax.swing.JButton btnMinus;
+    private javax.swing.JButton btnPayBill;
     private javax.swing.JButton btnPlus;
     private javax.swing.JButton btnRemoveLine;
-    private javax.swing.JLabel lblCartHint;
-    private javax.swing.JScrollPane scrollCart;
-    private javax.swing.JTable tblCart;
-    private javax.swing.JPanel pnlCartBottom;
-    private javax.swing.JLabel lblOrderNote;
-    private javax.swing.JTextField txtOrderNote;
-    private javax.swing.JLabel lblCartTotal;
-    private javax.swing.JPanel pnlCartButtons;
-    private javax.swing.JButton btnClearCart;
+    private javax.swing.JButton btnSendChat;
     private javax.swing.JButton btnSendOrder;
-    private javax.swing.JPanel pnlMyOrders;
-    private javax.swing.JScrollPane scrollMyOrders;
-    private javax.swing.JTable tblMyOrders;
-    private javax.swing.JPanel pnlMyOrdersBottom;
-    private javax.swing.JLabel lblMyOrdersTotal;
-    private javax.swing.JLabel lblMyOrdersHint;
-    private javax.swing.JPanel pnlChat;
+    private javax.swing.JLabel lblCartHint;
+    private javax.swing.JLabel lblCartTotal;
     private javax.swing.JLabel lblChatHint;
+    private javax.swing.JLabel lblClock;
+    private javax.swing.JLabel lblConnection;
+    private javax.swing.JLabel lblGreeting;
+    private javax.swing.JLabel lblMenuHint;
+    private javax.swing.JLabel lblMyOrdersHint;
+    private javax.swing.JLabel lblMyOrdersTotal;
+    private javax.swing.JLabel lblOrderNote;
+    private javax.swing.JLabel lblTableName;
+    private javax.swing.JLabel lblToast;
+    private javax.swing.JPanel pnlCart;
+    private javax.swing.JPanel pnlCartActions;
+    private javax.swing.JPanel pnlCartBottom;
+    private javax.swing.JPanel pnlCartButtons;
+    private javax.swing.JPanel pnlChat;
     private javax.swing.JPanel pnlChatHost;
     private javax.swing.JPanel pnlChatInput;
-    private javax.swing.JTextField txtChatInput;
-    private javax.swing.JButton btnSendChat;
+    private javax.swing.JPanel pnlCombo;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlHeaderLeft;
+    private javax.swing.JPanel pnlHeaderRight;
+    private javax.swing.JPanel pnlMenu;
+    private javax.swing.JPanel pnlMyOrders;
+    private javax.swing.JPanel pnlMyOrdersBottom;
+    private javax.swing.JPanel pnlRight;
     private javax.swing.JPanel pnlStatusBar;
-    private javax.swing.JLabel lblToast;
-    private javax.swing.JLabel lblClock;
+    private javax.swing.JScrollPane scrollCart;
+    private javax.swing.JScrollPane scrollCombo;
+    private javax.swing.JScrollPane scrollMyOrders;
+    private javax.swing.JSplitPane splitMain;
+    private javax.swing.JTabbedPane tabMenu;
+    private javax.swing.JTabbedPane tabRight;
+    private javax.swing.JTable tblCart;
+    private javax.swing.JTable tblMyOrders;
+    private javax.swing.JTextField txtChatInput;
+    private javax.swing.JTextField txtOrderNote;
     // End of variables declaration//GEN-END:variables
 }

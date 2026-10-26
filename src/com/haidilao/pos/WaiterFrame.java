@@ -392,6 +392,7 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         pnlHeader = new javax.swing.JPanel();
         pnlHeaderLeft = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
@@ -432,21 +433,19 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Nhân viên phục vụ");
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         pnlHeader.setBackground(new java.awt.Color(31, 36, 48));
         pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 16, 10, 16));
         pnlHeader.setLayout(new java.awt.BorderLayout(16, 0));
 
         pnlHeaderLeft.setOpaque(false);
-        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlHeaderLeft.setLayout(new java.awt.GridLayout(2, 1));
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(241, 196, 15));
         lblTitle.setText("NHÂN VIÊN PHỤC VỤ");
         pnlHeaderLeft.add(lblTitle);
 
-        lblStaff.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblStaff.setForeground(new java.awt.Color(200, 206, 216));
         lblStaff.setText("Nhân viên: -");
         pnlHeaderLeft.add(lblStaff);
@@ -483,7 +482,7 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
         pnlHeader.add(pnlCounters, java.awt.BorderLayout.CENTER);
 
         pnlHeaderRight.setOpaque(false);
-        pnlHeaderRight.setLayout(new java.awt.GridLayout(2, 1, 0, 0));
+        pnlHeaderRight.setLayout(new java.awt.GridLayout(2, 1));
 
         lblConnection.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblConnection.setForeground(new java.awt.Color(241, 196, 15));
@@ -491,7 +490,6 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
         lblConnection.setText("● Đang tìm máy chủ...");
         pnlHeaderRight.add(lblConnection);
 
-        lblClock.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblClock.setForeground(new java.awt.Color(200, 206, 216));
         lblClock.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblClock.setText("--:--");
@@ -503,18 +501,17 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
 
         splitMain.setDividerLocation(470);
         splitMain.setResizeWeight(0.42);
+
         pnlLeft.setBackground(new java.awt.Color(244, 245, 247));
         pnlLeft.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 5));
         pnlLeft.setLayout(new java.awt.BorderLayout(0, 8));
 
-        lblTablesHint.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblTablesHint.setForeground(new java.awt.Color(127, 140, 141));
         lblTablesHint.setText("Các bàn Lễ tân giao cho bạn. Bấm vào bàn để nhắn tin với khách.");
         pnlLeft.add(lblTablesHint, java.awt.BorderLayout.NORTH);
 
         pnlTableList.setBackground(new java.awt.Color(244, 245, 247));
         pnlTableList.setLayout(new java.awt.GridLayout(0, 1, 8, 8));
-
         scrollTables.setViewportView(pnlTableList);
 
         pnlLeft.add(scrollTables, java.awt.BorderLayout.CENTER);
@@ -585,7 +582,6 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
         lblChatTitle.setText("Chọn một bàn để nhắn tin");
         pnlChatHeader.add(lblChatTitle, java.awt.BorderLayout.WEST);
 
-        lblChatInfo.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         lblChatInfo.setForeground(new java.awt.Color(127, 140, 141));
         lblChatInfo.setText(" ");
         pnlChatHeader.add(lblChatInfo, java.awt.BorderLayout.EAST);
@@ -594,7 +590,6 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
 
         pnlChatHost.setBackground(new java.awt.Color(255, 255, 255));
         pnlChatHost.setLayout(new java.awt.BorderLayout());
-
         pnlConversation.add(pnlChatHost, java.awt.BorderLayout.CENTER);
 
         pnlChatBottom.setOpaque(false);
@@ -604,7 +599,6 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
         pnlQuickReplies.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 0));
 
         btnQuick1.setBackground(new java.awt.Color(236, 240, 241));
-        btnQuick1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnQuick1.setForeground(new java.awt.Color(44, 62, 80));
         btnQuick1.setText("Dạ, em đến ngay ạ");
         btnQuick1.setFocusable(false);
@@ -616,7 +610,6 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
         pnlQuickReplies.add(btnQuick1);
 
         btnQuick2.setBackground(new java.awt.Color(236, 240, 241));
-        btnQuick2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnQuick2.setForeground(new java.awt.Color(44, 62, 80));
         btnQuick2.setText("Món đang được chuẩn bị ạ");
         btnQuick2.setFocusable(false);
@@ -628,7 +621,6 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
         pnlQuickReplies.add(btnQuick2);
 
         btnQuick3.setBackground(new java.awt.Color(236, 240, 241));
-        btnQuick3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         btnQuick3.setForeground(new java.awt.Color(44, 62, 80));
         btnQuick3.setText("Dạ vâng, em mang ra liền");
         btnQuick3.setFocusable(false);
@@ -716,42 +708,42 @@ public class WaiterFrame extends javax.swing.JFrame implements ClientEventListen
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlHeader;
-    private javax.swing.JPanel pnlHeaderLeft;
-    private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblStaff;
-    private javax.swing.JPanel pnlCounters;
-    private javax.swing.JLabel lblCountTables;
-    private javax.swing.JLabel lblCountServe;
-    private javax.swing.JLabel lblCountCalls;
-    private javax.swing.JPanel pnlHeaderRight;
-    private javax.swing.JLabel lblConnection;
-    private javax.swing.JLabel lblClock;
-    private javax.swing.JSplitPane splitMain;
-    private javax.swing.JPanel pnlLeft;
-    private javax.swing.JLabel lblTablesHint;
-    private javax.swing.JScrollPane scrollTables;
-    private javax.swing.JPanel pnlTableList;
-    private javax.swing.JPanel pnlServe;
-    private javax.swing.JScrollPane scrollServe;
-    private javax.swing.JTable tblServe;
-    private javax.swing.JPanel pnlServeButtons;
-    private javax.swing.JLabel lblServeHint;
-    private javax.swing.JButton btnServed;
-    private javax.swing.JPanel pnlConversation;
-    private javax.swing.JPanel pnlChatHeader;
-    private javax.swing.JLabel lblChatTitle;
-    private javax.swing.JLabel lblChatInfo;
-    private javax.swing.JPanel pnlChatHost;
-    private javax.swing.JPanel pnlChatBottom;
-    private javax.swing.JPanel pnlQuickReplies;
     private javax.swing.JButton btnQuick1;
     private javax.swing.JButton btnQuick2;
     private javax.swing.JButton btnQuick3;
-    private javax.swing.JPanel pnlChatInput;
-    private javax.swing.JTextField txtMessage;
     private javax.swing.JButton btnSend;
-    private javax.swing.JPanel pnlStatusBar;
+    private javax.swing.JButton btnServed;
+    private javax.swing.JLabel lblChatInfo;
+    private javax.swing.JLabel lblChatTitle;
+    private javax.swing.JLabel lblClock;
+    private javax.swing.JLabel lblConnection;
+    private javax.swing.JLabel lblCountCalls;
+    private javax.swing.JLabel lblCountServe;
+    private javax.swing.JLabel lblCountTables;
+    private javax.swing.JLabel lblServeHint;
+    private javax.swing.JLabel lblStaff;
+    private javax.swing.JLabel lblTablesHint;
+    private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblToast;
+    private javax.swing.JPanel pnlChatBottom;
+    private javax.swing.JPanel pnlChatHeader;
+    private javax.swing.JPanel pnlChatHost;
+    private javax.swing.JPanel pnlChatInput;
+    private javax.swing.JPanel pnlConversation;
+    private javax.swing.JPanel pnlCounters;
+    private javax.swing.JPanel pnlHeader;
+    private javax.swing.JPanel pnlHeaderLeft;
+    private javax.swing.JPanel pnlHeaderRight;
+    private javax.swing.JPanel pnlLeft;
+    private javax.swing.JPanel pnlQuickReplies;
+    private javax.swing.JPanel pnlServe;
+    private javax.swing.JPanel pnlServeButtons;
+    private javax.swing.JPanel pnlStatusBar;
+    private javax.swing.JPanel pnlTableList;
+    private javax.swing.JScrollPane scrollServe;
+    private javax.swing.JScrollPane scrollTables;
+    private javax.swing.JSplitPane splitMain;
+    private javax.swing.JTable tblServe;
+    private javax.swing.JTextField txtMessage;
     // End of variables declaration//GEN-END:variables
 }
